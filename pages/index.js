@@ -175,8 +175,8 @@ const IndexPage = () => {
 						"/path/to/opennote/mcp-server/connect.js",
 				],
 				env: {
-					CLAWDNOTE_API_KEY: apiKey,
-					CLAWDNOTE_URL: "http://localhost:3000",
+					OpenNote_API_KEY: apiKey,
+					OpenNote_URL: "http://localhost:3000",
 				},
 			},
 		},

@@ -1,6 +1,6 @@
-# ClawdNote - Local-First AI Note Taking App
+# OpenNote - Local-First AI Note Taking App
 
-ClawdNote is a privacy-focused, **local-first** note-taking application. Unlike traditional apps, ClawdNote **does not use Firebase, Supabase, or any cloud database**. Everything you create stays on your machine.
+OpenNote is a privacy-focused, **local-first** note-taking application. Unlike traditional apps, OpenNote **does not use Firebase, Supabase, or any cloud database**. Everything you create stays on your machine.
 
 It combines rich-text editing (Tiptap), high-performance local storage (IndexedDB), and advanced AI capabilities (MCP & Local Embeddings).
 
@@ -57,7 +57,7 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
 
 ## Model Context Protocol (MCP) Integration
 
-ClawdNote includes a built-in MCP bridge that allows Claude Desktop to interact with your local notes.
+OpenNote includes a built-in MCP bridge that allows Claude Desktop to interact with your local notes.
 
 ### 1. Generating an API Key
 

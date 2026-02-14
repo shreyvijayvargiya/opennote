@@ -25,15 +25,15 @@ function log(message) {
 }
 
 async function main() {
-	const apiKey = process.env.CLAWDNOTE_API_KEY;
-	const baseUrl = process.env.CLAWDNOTE_URL || "http://localhost:3000";
+	const apiKey = process.env.OpenNote_API_KEY;
+	const baseUrl = process.env.OpenNote_URL || "http://localhost:3000";
 
 	log(`[Bridge] Starting bridge process (PID: ${process.pid})`);
 	log(`[Bridge] Base URL: ${baseUrl}`);
 	log(`[Bridge] API Key presence: ${apiKey ? "Yes" : "No"}`);
 
 	if (!apiKey) {
-		log("[Bridge] Error: CLAWDNOTE_API_KEY environment variable is required.");
+		log("[Bridge] Error: OpenNote_API_KEY environment variable is required.");
 		process.exit(1);
 	}
 

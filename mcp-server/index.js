@@ -7,7 +7,7 @@ import {
 
 // Removed Firebase Admin - switching to local-only stub
 console.error(
-	"ClawdNote MCP Server: Running in local-only mode (Firebase removed)",
+	"OpenNote MCP Server: Running in local-only mode (Firebase removed)",
 );
 
 const mcpServer = new McpServer(
@@ -54,7 +54,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
 	const transport = new StdioServerTransport();
 	await mcpServer.connect(transport);
-	console.error("ClawdNote MCP Server ready on stdio");
+	console.error("OpenNote MCP Server ready on stdio");
 }
 
 main().catch((error) => {
