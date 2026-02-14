@@ -39,21 +39,13 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
    npm install
    ```
 
-3. **Setup Environment Variables (Optional)**:
-   If you want to use AI-powered voice processing, create a `.env.local` file:
-
-   ```env
-   # OpenRouter Config (Optional)
-   NEXT_PUBLIC_OPENROUTER_API_KEY=your_openrouter_api_key
-   ```
-
-4. **Run the development server**:
+3. **Run the development server**:
 
    ```bash
    npm run dev
    ```
 
-5. **Open [http://localhost:3000](http://localhost:3000)** in your browser.
+4. **Open [http://localhost:3000](http://localhost:3000)** in your browser.
 
 ## Model Context Protocol (MCP) Integration
 
