@@ -4,11 +4,6 @@ import {
 	Search,
 	Settings,
 	User,
-	LogOut,
-	Mic,
-	Square,
-	Check,
-	Loader2,
 	FileText,
 	Network,
 	Sun,
@@ -19,12 +14,10 @@ import {
 	Copy,
 	Trash2,
 	Trash,
-	RefreshCw,
-	Activity,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { useLiveQuery } from "dexie-react-hooks";
 import { noteService } from "../lib/db/noteService";
 import { db as localDb } from "../lib/db/localDb";
@@ -339,6 +332,24 @@ const IndexPage = () => {
 									<Settings className="w-3.5 h-3.5" />
 									Config
 								</button>
+							</div>
+							<div className="p-2 text-xs">
+								<p>
+									Built using{" "}
+									<a href="https://buildsaas.dev" className="text-indigo-500">
+										BuildSaaS
+									</a>
+								</p>
+								<p>
+									Fully open-source,{" "}
+									<a
+										href="https://github.com/shreyvijayvargiya/opennote"
+										className="text-indigo-500"
+										target="_blank"
+									>
+										OpenNote
+									</a>
+								</p>
 							</div>
 						</div>
 					</div>

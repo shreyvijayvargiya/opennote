@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../styles/globals.css";
 import { ThemeProvider, useTheme } from "../lib/context/ThemeContext";
