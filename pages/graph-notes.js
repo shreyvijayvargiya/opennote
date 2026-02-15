@@ -40,7 +40,7 @@ const CosmosBackground = ({ isDarkMode }) => {
 
 	return (
 		<div
-			className={`absolute inset-0 overflow-hidden ${isDarkMode ? "bg-[#020205]" : "bg-white"} z-0 transition-colors duration-300`}
+			className={`absolute inset-0 overflow-hidden ${isDarkMode ? "bg-zinc-950" : "bg-white"} z-0 transition-colors duration-300`}
 		>
 			{/* Nebula Gradients - Only show in dark mode for cosmos effect */}
 			{isDarkMode && (
@@ -209,7 +209,7 @@ const GraphNotesPage = () => {
 	if (isNotesLoading) {
 		return (
 			<div
-				className={`h-screen w-screen flex flex-col items-center justify-center ${isDarkMode ? "bg-[#020205]" : "bg-white"} text-indigo-500`}
+				className={`h-screen w-screen flex flex-col items-center justify-center ${isDarkMode ? "bg-zinc-950" : "bg-white"} text-indigo-500`}
 			>
 				<Loader2 className="w-8 h-8 animate-spin mb-4" />
 				<p
@@ -223,7 +223,7 @@ const GraphNotesPage = () => {
 
 	return (
 		<div
-			className={`h-screen w-screen ${isDarkMode ? "bg-[#020205] text-white" : "bg-white text-zinc-900"} overflow-hidden relative font-sans transition-colors duration-300`}
+			className={`h-screen w-screen ${isDarkMode ? "bg-zinc-950 text-white" : "bg-white text-zinc-900"} overflow-hidden relative font-sans transition-colors duration-300`}
 		>
 			<Toaster theme={isDarkMode ? "dark" : "light"} position="bottom-center" />
 

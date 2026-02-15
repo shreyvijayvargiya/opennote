@@ -773,7 +773,7 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 						}
 						.ProseMirror p.is-editor-empty:first-child::before {
 							content: "Start writing your thoughts...";
-							color: ${isDarkMode ? "#3f3f46" : "#d1d5db"};
+							color: ${isDarkMode ? "#71717a" : "#9ca3af"};
 							font-style: normal;
 						}
 					`}</style>
