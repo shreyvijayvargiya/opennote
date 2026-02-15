@@ -22,6 +22,7 @@ export default function Document() {
 			<body>
 				<Main />
 				<NextScript />
+				<script src="/webmcp.js" defer></script>
 			</body>
 		</Html>
 	);

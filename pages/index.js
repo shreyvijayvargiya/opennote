@@ -25,6 +25,7 @@ import TiptapEditor from "../lib/components/TiptapEditor";
 import { useTheme } from "../lib/context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
+import { getNotesTools } from "../lib/mcp/notesTools";
 
 const IndexPage = () => {
 	const { isDarkMode, toggleTheme } = useTheme();
@@ -84,14 +85,51 @@ const IndexPage = () => {
 
 		// Randomize user identity on client-side only
 		const seed = Math.random();
-		setUser({
+		const newUser = {
 			uid: "local-user",
 			displayName: "Random User " + Math.floor(seed * 1000),
 			photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`,
-		});
+		};
+		setUser(newUser);
 
 		return () => clearInterval(interval);
 	}, []);
+
+	// WebMCP Integration
+	useEffect(() => {
+		const initWebMCP = () => {
+			if (window.WebMCP && !window.webmcp) {
+				const wmcp = new window.WebMCP();
+				window.webmcp = wmcp;
+
+				// Register tools using the externalized definitions
+				const tools = getNotesTools(user);
+				tools.forEach((tool) => {
+					wmcp.registerTool(tool.name, tool.description, tool.schema, tool.execute);
+				});
+			}
+		};
+
+		if (typeof window !== "undefined") {
+			if (window.WebMCP) {
+				initWebMCP();
+			} else {
+				const handleLoad = () => initWebMCP();
+				window.addEventListener("load", handleLoad);
+				// Also try an interval just in case load already fired or script loads late
+				const checkInterval = setInterval(() => {
+					if (window.WebMCP) {
+						initWebMCP();
+						clearInterval(checkInterval);
+					}
+				}, 1000);
+				return () => {
+					window.removeEventListener("load", handleLoad);
+					clearInterval(checkInterval);
+				};
+			}
+		}
+	}, [user]);
 
 	// Fetch Notes Locally with useLiveQuery for real-time updates
 	const notes =

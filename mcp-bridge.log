@@ -1,0 +1,64 @@
+[2026-02-15T06:34:06.593Z] [Bridge] Starting bridge process (PID: 37219)
+[2026-02-15T06:34:06.599Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:34:06.600Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:34:06.606Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:34:06.606Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:34:07.577Z] [Bridge] Starting bridge process (PID: 37234)
+[2026-02-15T06:34:07.578Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:34:07.578Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:34:07.583Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:34:07.583Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:34:07.600Z] [Bridge] Claude requested tools listing...
+[2026-02-15T06:34:07.601Z] [Bridge] Initiating Streamable HTTP connection to hosted server...
+[2026-02-15T06:34:09.473Z] [Bridge] Connected to hosted server via Streamable HTTP successfully
+[2026-02-15T06:34:09.535Z] [Bridge] Fetched 3 tools from hosted server
+[2026-02-15T06:35:29.120Z] [Bridge] Starting bridge process (PID: 38831)
+[2026-02-15T06:35:29.131Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:35:29.131Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:35:29.138Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:35:29.139Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:35:29.261Z] [Bridge] Claude requested tools listing...
+[2026-02-15T06:35:29.261Z] [Bridge] Initiating Streamable HTTP connection to hosted server...
+[2026-02-15T06:35:29.443Z] [Bridge] Connected to hosted server via Streamable HTTP successfully
+[2026-02-15T06:35:29.465Z] [Bridge] Fetched 3 tools from hosted server
+[2026-02-15T06:35:56.513Z] [Bridge] Claude calling tool: ping
+[2026-02-15T06:35:56.565Z] [Bridge] Tool call result received for ping
+[2026-02-15T06:36:00.075Z] [Bridge] Claude calling tool: list_notes
+[2026-02-15T06:36:00.097Z] [Bridge] Tool call result received for list_notes
+[2026-02-15T06:36:19.779Z] [Bridge] Claude calling tool: list_notes
+[2026-02-15T06:36:19.799Z] [Bridge] Tool call result received for list_notes
+[2026-02-15T06:38:11.108Z] [Bridge] Starting bridge process (PID: 41765)
+[2026-02-15T06:38:11.170Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:38:11.170Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:38:11.177Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:38:11.178Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:38:11.466Z] [Bridge] Claude requested tools listing...
+[2026-02-15T06:38:11.467Z] [Bridge] Initiating Streamable HTTP connection to hosted server...
+[2026-02-15T06:38:11.896Z] [Bridge] Connected to hosted server via Streamable HTTP successfully
+[2026-02-15T06:38:11.921Z] [Bridge] Fetched 3 tools from hosted server
+[2026-02-15T06:38:31.813Z] [Bridge] Claude calling tool: ping
+[2026-02-15T06:38:31.848Z] [Bridge] Tool call result received for ping
+[2026-02-15T06:38:38.790Z] [Bridge] Claude calling tool: list_notes
+[2026-02-15T06:38:38.837Z] [Bridge] Tool call result received for list_notes
+[2026-02-15T06:39:17.458Z] [Bridge] Claude calling tool: list_notes
+[2026-02-15T06:39:17.542Z] [Bridge] Tool call result received for list_notes
+[2026-02-15T06:46:40.287Z] [Bridge] Starting bridge process (PID: 50193)
+[2026-02-15T06:46:40.295Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:46:40.295Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:46:40.302Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:46:40.302Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:46:40.586Z] [Bridge] Claude requested tools listing...
+[2026-02-15T06:46:40.587Z] [Bridge] Initiating Streamable HTTP connection to hosted server...
+[2026-02-15T06:46:40.787Z] [Bridge] Connected to hosted server via Streamable HTTP successfully
+[2026-02-15T06:46:40.815Z] [Bridge] Fetched 3 tools from hosted server
+[2026-02-15T06:50:50.456Z] [Bridge] Starting bridge process (PID: 54839)
+[2026-02-15T06:50:50.459Z] [Bridge] Base URL: http://localhost:3000
+[2026-02-15T06:50:50.459Z] [Bridge] API Key presence: Yes
+[2026-02-15T06:50:50.463Z] [Bridge] Connecting to Claude via Stdio...
+[2026-02-15T06:50:50.463Z] [Bridge] Bridge ready and listening for Claude requests
+[2026-02-15T06:50:51.289Z] [Bridge] Claude requested tools listing...
+[2026-02-15T06:50:51.289Z] [Bridge] Initiating Streamable HTTP connection to hosted server...
+[2026-02-15T06:50:51.513Z] [Bridge] Connected to hosted server via Streamable HTTP successfully
+[2026-02-15T06:50:51.529Z] [Bridge] Fetched 3 tools from hosted server
+[2026-02-15T06:52:10.086Z] [Bridge] Claude calling tool: list_notes
+[2026-02-15T06:52:10.342Z] [Bridge] Tool call result received for list_notes
