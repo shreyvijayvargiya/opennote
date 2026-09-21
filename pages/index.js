@@ -14,6 +14,9 @@ import {
 	Copy,
 	Trash2,
 	Trash,
+	CalendarCheck,
+	ChevronDown,
+	ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -27,6 +30,121 @@ import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { getNotesTools } from "../lib/mcp/notesTools";
 
+const noteMatchesQuery = (note, query) => {
+	if (!query) return true;
+	const q = query.toLowerCase();
+	return (
+		note.title?.toLowerCase().includes(q) ||
+		note.content?.replace(/<[^>]*>/g, "").toLowerCase().includes(q)
+	);
+};
+
+const isSelfOrDescendant = (noteId, ancestorId, notes) => {
+	if (noteId == null || ancestorId == null) return false;
+	if (noteId === ancestorId) return true;
+	const byId = new Map(notes.map((n) => [n.id, n]));
+	let current = byId.get(noteId);
+	const seen = new Set();
+	while (current?.parentId != null && !seen.has(current.id)) {
+		if (current.parentId === ancestorId) return true;
+		seen.add(current.id);
+		current = byId.get(current.parentId);
+	}
+	return false;
+};
+
+const NoteTreeItem = ({
+	note,
+	childrenByParent,
+	visibleIds,
+	activeNoteId,
+	expandedIds,
+	searchQuery,
+	onToggle,
+	onSelect,
+	onDelete,
+}) => {
+	const children = (childrenByParent.get(note.id) || []).filter(
+		(child) => !visibleIds || visibleIds.has(child.id),
+	);
+	const hasChildren = children.length > 0;
+	const isExpanded = expandedIds.has(note.id) || Boolean(searchQuery);
+	const isActive = activeNoteId === note.id;
+
+	return (
+		<div>
+			<div
+				className={`w-full text-left rounded-xl transition-all group relative flex items-center ${
+					isActive
+						? "bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800"
+						: "hover:bg-white/50 dark:hover:bg-zinc-900/50"
+				}`}
+			>
+				{hasChildren ? (
+					<button
+						type="button"
+						onClick={(e) => {
+							e.stopPropagation();
+							onToggle(note.id);
+						}}
+						className="ml-1 p-0.5 rounded-md text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 flex-shrink-0"
+						title={isExpanded ? "Collapse" : "Expand"}
+					>
+						{isExpanded ? (
+							<ChevronDown className="w-3 h-3" />
+						) : (
+							<ChevronRight className="w-3 h-3" />
+						)}
+					</button>
+				) : (
+					<span className="w-4 ml-1 flex-shrink-0" />
+				)}
+				<button
+					type="button"
+					onClick={() => onSelect(note.id)}
+					className="flex-1 min-w-0 text-left p-2.5 pr-8"
+				>
+					<span
+						className={`block font-bold text-[11px] truncate ${isActive ? "text-zinc-600 dark:text-zinc-400" : "text-zinc-700 dark:text-zinc-300"}`}
+					>
+						{note.title || "Untitled"}
+					</span>
+				</button>
+				<div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+					<button
+						type="button"
+						onClick={(e) => {
+							e.stopPropagation();
+							onDelete(note.id);
+						}}
+						className="p-1 text-zinc-300 hover:text-red-500 transition-colors"
+					>
+						<Trash className="w-3 h-3" />
+					</button>
+				</div>
+			</div>
+			{hasChildren && isExpanded && (
+				<div className="ml-3 pl-2 border-l border-zinc-100 dark:border-zinc-800 space-y-0.5">
+					{children.map((child) => (
+						<NoteTreeItem
+							key={child.id}
+							note={child}
+							childrenByParent={childrenByParent}
+							visibleIds={visibleIds}
+							activeNoteId={activeNoteId}
+							expandedIds={expandedIds}
+							searchQuery={searchQuery}
+							onToggle={onToggle}
+							onSelect={onSelect}
+							onDelete={onDelete}
+						/>
+					))}
+				</div>
+			)}
+		</div>
+	);
+};
+
 const IndexPage = () => {
 	const { isDarkMode, toggleTheme } = useTheme();
 	// Use a mock stable user for initial render to avoid hydration mismatch
@@ -37,6 +155,7 @@ const IndexPage = () => {
 	});
 	const [activeNoteId, setActiveNoteId] = useState(null);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [expandedIds, setExpandedIds] = useState(() => new Set());
 	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 	const [showProfileModal, setShowProfileModal] = useState(false);
@@ -136,15 +255,109 @@ const IndexPage = () => {
 		useLiveQuery(() => noteService.getAllNotes(user?.uid), [user?.uid]) || [];
 
 	// Filter Notes
-	const filteredNotes = useMemo(() => {
+	const childrenByParent = useMemo(() => {
+		const map = new Map();
+		for (const note of notes) {
+			if (note.parentId == null) continue;
+			if (!map.has(note.parentId)) map.set(note.parentId, []);
+			map.get(note.parentId).push(note);
+		}
+		for (const list of map.values()) {
+			list.sort((a, b) => b.updatedAt - a.updatedAt);
+		}
+		return map;
+	}, [notes]);
+
+	const noteIds = useMemo(() => new Set(notes.map((n) => n.id)), [notes]);
+
+	const rootNotes = useMemo(() => {
 		return notes
-			.sort((a, b) => b.updatedAt - a.updatedAt)
-			.filter(
-				(note) =>
-					note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					note.content?.toLowerCase().includes(searchQuery.toLowerCase()),
-			);
-	}, [notes, searchQuery]);
+			.filter((note) => note.parentId == null || !noteIds.has(note.parentId))
+			.sort((a, b) => b.updatedAt - a.updatedAt);
+	}, [notes, noteIds]);
+
+	const visibleIds = useMemo(() => {
+		if (!searchQuery) return null;
+		const visible = new Set();
+		const mark = (note) => {
+			const kids = childrenByParent.get(note.id) || [];
+			let childVisible = false;
+			for (const child of kids) {
+				if (mark(child)) childVisible = true;
+			}
+			if (noteMatchesQuery(note, searchQuery) || childVisible) {
+				visible.add(note.id);
+				return true;
+			}
+			return false;
+		};
+		rootNotes.forEach(mark);
+		return visible;
+	}, [searchQuery, childrenByParent, rootNotes]);
+
+	const filteredRootNotes = useMemo(() => {
+		if (!visibleIds) return rootNotes;
+		return rootNotes.filter((note) => visibleIds.has(note.id));
+	}, [rootNotes, visibleIds]);
+
+	const breadcrumb = useMemo(() => {
+		if (!activeNoteId) return [];
+		const byId = new Map(notes.map((n) => [n.id, n]));
+		const path = [];
+		let current = byId.get(activeNoteId);
+		const seen = new Set();
+		while (current && !seen.has(current.id)) {
+			path.unshift({ id: current.id, title: current.title || "Untitled" });
+			seen.add(current.id);
+			current =
+				current.parentId != null ? byId.get(current.parentId) : null;
+		}
+		return path;
+	}, [notes, activeNoteId]);
+
+	useEffect(() => {
+		if (!activeNoteId) return;
+		const byId = new Map(notes.map((n) => [n.id, n]));
+		setExpandedIds((prev) => {
+			const next = new Set(prev);
+			let changed = false;
+			let current = byId.get(activeNoteId);
+			const seen = new Set();
+			while (current?.parentId != null && !seen.has(current.id)) {
+				if (!next.has(current.parentId)) {
+					next.add(current.parentId);
+					changed = true;
+				}
+				seen.add(current.id);
+				current = byId.get(current.parentId);
+			}
+			if (
+				(childrenByParent.get(activeNoteId) || []).length > 0 &&
+				!next.has(activeNoteId)
+			) {
+				next.add(activeNoteId);
+				changed = true;
+			}
+			return changed ? next : prev;
+		});
+	}, [activeNoteId, notes, childrenByParent]);
+
+	const handleSelectNote = (id) => {
+		const numericId = Number(id);
+		setActiveNoteId(Number.isNaN(numericId) ? id : numericId);
+		if (typeof window !== "undefined" && window.innerWidth < 768) {
+			setIsSidebarOpen(false);
+		}
+	};
+
+	const handleToggleExpanded = (id) => {
+		setExpandedIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) next.delete(id);
+			else next.add(id);
+			return next;
+		});
+	};
 
 	// Actions
 	const handleCreateNote = async () => {
@@ -162,9 +375,10 @@ const IndexPage = () => {
 
 	const handleDeleteNote = async (id) => {
 		try {
+			const deleted = notes.find((n) => n.id === id);
 			await noteService.deleteNote(id);
-			if (activeNoteId === id) {
-				setActiveNoteId(null);
+			if (isSelfOrDescendant(activeNoteId, id, notes)) {
+				setActiveNoteId(deleted?.parentId ?? null);
 			}
 			toast.success("Note deleted");
 		} catch (error) {
@@ -280,7 +494,7 @@ const IndexPage = () => {
 							</div>
 						</div>
 
-						<div className="relative mb-6">
+						<div className="relative mb-3">
 							<Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-300" />
 							<input
 								type="text"
@@ -291,43 +505,31 @@ const IndexPage = () => {
 							/>
 						</div>
 
+						<Link
+							href="/todos"
+							className="flex items-center gap-2.5 p-2.5 mb-4 rounded-xl hover:bg-white dark:hover:bg-zinc-900 transition-all group"
+						>
+							<CalendarCheck className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors" />
+							<span className="font-bold text-[11px] text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">
+								Todos
+							</span>
+						</Link>
+
 						<div className="flex-1 overflow-y-auto -mx-1 px-1 space-y-0.5 scrollbar-hide">
-							{filteredNotes.length > 0 ? (
-								filteredNotes.map((note) => (
-									<button
+							{filteredRootNotes.length > 0 ? (
+								filteredRootNotes.map((note) => (
+									<NoteTreeItem
 										key={note.id}
-										onClick={() => {
-											setActiveNoteId(note.id);
-											if (window.innerWidth < 768) setIsSidebarOpen(false);
-										}}
-										className={`w-full text-left p-2.5 rounded-xl transition-all group relative flex flex-col gap-0.5 ${
-											activeNoteId === note.id
-												? "bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-800"
-												: "hover:bg-white/50 dark:hover:bg-zinc-900/50"
-										}`}
-									>
-										<span
-											className={`font-bold text-[11px] truncate pr-6 ${activeNoteId === note.id ? "text-zinc-600 dark:text-zinc-400" : "text-zinc-700 dark:text-zinc-300"}`}
-										>
-											{note.title || "Untitled"}
-										</span>
-										<span
-											className={`text-[9px] truncate leading-relaxed ${activeNoteId === note.id ? "text-zinc-500 dark:text-zinc-400" : "text-zinc-400 dark:text-zinc-500"}`}
-										>
-											{note.content?.replace(/<[^>]*>/g, "") || "No content"}
-										</span>
-										<div className="absolute right-2 top-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
-											<button
-												onClick={(e) => {
-													e.stopPropagation();
-													handleDeleteNote(note.id);
-												}}
-												className="p-1 text-zinc-300 hover:text-red-500 transition-colors"
-											>
-												<Trash className="w-3 h-3" />
-											</button>
-										</div>
-									</button>
+										note={note}
+										childrenByParent={childrenByParent}
+										visibleIds={visibleIds}
+										activeNoteId={activeNoteId}
+										expandedIds={expandedIds}
+										searchQuery={searchQuery}
+										onToggle={handleToggleExpanded}
+										onSelect={handleSelectNote}
+										onDelete={handleDeleteNote}
+									/>
 								))
 							) : (
 								<div className="py-12 text-center text-zinc-300 flex flex-col items-center gap-2">
@@ -426,6 +628,9 @@ const IndexPage = () => {
 							>
 								<TiptapEditor
 									initialNote={activeNote}
+									breadcrumb={breadcrumb}
+									onNavigateNote={handleSelectNote}
+									onOpenPage={handleSelectNote}
 									onUpdate={(updatedNote) => {
 										// Local state is updated via useLiveQuery automatically
 									}}

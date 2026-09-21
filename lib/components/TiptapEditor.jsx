@@ -33,6 +33,7 @@ lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("json", json);
 
 import SlashCommand from "../tiptap/slash-command";
+import PageBlock from "../tiptap/PageBlock";
 import SlashCommandList from "./SlashCommandList";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
@@ -42,7 +43,6 @@ import {
 	Send,
 	Loader2,
 	Save,
-	Type,
 	Bold,
 	Italic,
 	List,
@@ -55,7 +55,8 @@ import {
 	Table as TableIcon,
 	Link as LinkIcon,
 	Info,
-	Plus,
+	FileText,
+	ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { debounce } from "lodash";
@@ -63,7 +64,13 @@ import { useTheme } from "../context/ThemeContext";
 
 import { noteService } from "../db/noteService";
 
-const TiptapEditor = ({ initialNote, onUpdate }) => {
+const TiptapEditor = ({
+	initialNote,
+	onUpdate,
+	breadcrumb = [],
+	onNavigateNote,
+	onOpenPage,
+}) => {
 	const { isDarkMode } = useTheme();
 	const user = { uid: "local-user" }; // Mock local user
 	const [isRecording, setIsRecording] = useState(false);
@@ -79,6 +86,9 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 	const [tableCols, setTableCols] = useState(3);
 	const fileInputRef = useRef(null);
 	const recognitionRef = useRef(null);
+	const onOpenPageRef = useRef(onOpenPage);
+	const initialNoteRef = useRef(initialNote);
+	onOpenPageRef.current = onOpenPage;
 
 	const handleMediaSubmit = () => {
 		if (mediaType === "image") {
@@ -270,6 +280,39 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 						editor.chain().focus().deleteRange(range).toggleBlockquote().run();
 					},
 				},
+				{
+					title: "Page",
+					description: "Create a nested page",
+					icon: <FileText className="w-4 h-4" />,
+					command: async ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						try {
+							const parent = initialNoteRef.current;
+							const child = await noteService.saveNote(user.uid, {
+								title: "Untitled Page",
+								content: "<p></p>",
+								parentId: parent.id,
+							});
+							editor
+								.chain()
+								.focus()
+								.insertContent([
+									{
+										type: "page",
+										attrs: {
+											pageId: String(child.id),
+											title: child.title || "Untitled Page",
+										},
+									},
+									{ type: "paragraph" },
+								])
+								.run();
+						} catch (error) {
+							console.error("Failed to create page:", error);
+							toast.error("Failed to create page");
+						}
+					},
+				},
 			].filter((item) =>
 				item.title.toLowerCase().startsWith(query.toLowerCase()),
 			);
@@ -336,7 +379,6 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 	// Use refs to avoid stale closures in debounced function
 	const titleRef = useRef(title);
 	const contentRef = useRef(initialNote.content || "");
-	const initialNoteRef = useRef(initialNote);
 
 	const saveNoteImmediately = async () => {
 		setIsSaving(true);
@@ -481,6 +523,11 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 				bulletListMarker: "-",
 				linkify: true,
 			}),
+			PageBlock.configure({
+				onOpenPage: (pageId) => {
+					onOpenPageRef.current?.(pageId);
+				},
+			}),
 			SlashCommand.configure({
 				suggestion,
 			}),
@@ -495,6 +542,14 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 			saveNoteImmediately();
 		},
 	});
+
+	useEffect(() => {
+		if (!editor) return;
+		if (!editor.storage.page) editor.storage.page = {};
+		editor.storage.page.onOpenPage = (pageId) =>
+			onOpenPageRef.current?.(pageId);
+	}, [editor]);
+
 	// Update refs when props change
 	useEffect(() => {
 		// Only update local state if the note ID actually changed
@@ -602,6 +657,46 @@ const TiptapEditor = ({ initialNote, onUpdate }) => {
 				className={`px-8 pt-12 pb-6 flex items-end justify-between z-10 max-w-4xl mx-auto w-full`}
 			>
 				<div className="flex-1 min-w-0">
+					{breadcrumb.length > 1 && (
+						<div className="flex items-center gap-2 mb-4 min-w-0">
+							<button
+								type="button"
+								onClick={() =>
+									onNavigateNote?.(breadcrumb[breadcrumb.length - 2].id)
+								}
+								className={`p-1.5 rounded-lg flex-shrink-0 transition-colors ${
+									isDarkMode
+										? "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
+										: "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700"
+								}`}
+								title="Back"
+							>
+								<ArrowLeft className="w-4 h-4" />
+							</button>
+							<div className="flex items-center gap-1.5 min-w-0 text-xs text-zinc-400">
+								{breadcrumb.map((crumb, index) => (
+									<React.Fragment key={crumb.id}>
+										{index > 0 && (
+											<span className="text-zinc-300 dark:text-zinc-600">
+												/
+											</span>
+										)}
+										<button
+											type="button"
+											onClick={() => onNavigateNote?.(crumb.id)}
+											className={`truncate transition-colors ${
+												index === breadcrumb.length - 1
+													? "font-semibold text-zinc-600 dark:text-zinc-300"
+													: "hover:text-zinc-700 dark:hover:text-zinc-200"
+											}`}
+										>
+											{crumb.title || "Untitled"}
+										</button>
+									</React.Fragment>
+								))}
+							</div>
+						</div>
+					)}
 					<input
 						type="text"
 						value={title}
