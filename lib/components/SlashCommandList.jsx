@@ -4,18 +4,6 @@ import React, {
 	useImperativeHandle,
 	useState,
 } from "react";
-import {
-	Heading1,
-	Heading2,
-	List,
-	ListOrdered,
-	Type,
-	CheckSquare,
-	Code,
-	Image as ImageIcon,
-	Table as TableIcon,
-	Info,
-} from "lucide-react";
 
 const SlashCommandList = forwardRef((props, ref) => {
 	const [selectedIndex, setSelectedIndex] = useState(0);
