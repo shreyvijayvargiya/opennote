@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--radius: 0.75rem;
+}
+
 .ProseMirror {
 	outline: none !important;
 	color: inherit;
@@ -112,7 +116,7 @@
 .ProseMirror img {
 	width: 100% !important;
 	height: auto !important;
-	border-radius: 8px !important;
+	border-radius: var(--radius) !important;
 	margin: 1em 0 !important;
 }
 .ProseMirror a {
@@ -132,13 +136,26 @@
 }
 
 /* Table Styles for TipTap */
+.ProseMirror .tableWrapper {
+	border-radius: var(--radius);
+	overflow: hidden;
+	border: 1px solid #e4e4e7;
+	margin: 1em 0;
+}
+
+.dark .ProseMirror .tableWrapper {
+	border-color: #27272a;
+}
+
 .ProseMirror table {
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 0;
 	margin: 1em 0;
 	table-layout: fixed;
 	width: 100%;
 	overflow: hidden;
 	border: 1px solid #e4e4e7;
+	border-radius: var(--radius);
 }
 
 .dark .ProseMirror table {
@@ -169,6 +186,21 @@
 	text-align: left;
 	background-color: #f4f4f5;
 	color: #18181b;
+}
+
+.ProseMirror table tr:first-child th:first-child,
+.ProseMirror table tr:first-child td:first-child {
+	border-top-left-radius: var(--radius);
+}
+.ProseMirror table tr:first-child th:last-child,
+.ProseMirror table tr:first-child td:last-child {
+	border-top-right-radius: var(--radius);
+}
+.ProseMirror table tr:last-child td:first-child {
+	border-bottom-left-radius: var(--radius);
+}
+.ProseMirror table tr:last-child td:last-child {
+	border-bottom-right-radius: var(--radius);
 }
 
 .dark .ProseMirror table th {

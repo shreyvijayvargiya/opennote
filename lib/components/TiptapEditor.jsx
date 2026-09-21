@@ -33,7 +33,7 @@ lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("json", json);
 
 import SlashCommand from "../tiptap/slash-command";
-import PageBlock from "../tiptap/PageBlock";
+import PageBlock, { PageInline } from "../tiptap/PageBlock";
 import SlashCommandList from "./SlashCommandList";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
@@ -285,6 +285,12 @@ const TiptapEditor = ({
 					description: "Create a nested page",
 					icon: <FileText className="w-4 h-4" />,
 					command: async ({ editor, range }) => {
+						const $from = editor.state.doc.resolve(range.from);
+						const parentNode = $from.parent;
+						const leftoverSize =
+							parentNode.content.size - (range.to - range.from);
+						const isInline = leftoverSize > 0;
+
 						editor.chain().focus().deleteRange(range).run();
 						try {
 							const parent = initialNoteRef.current;
@@ -293,20 +299,32 @@ const TiptapEditor = ({
 								content: "<p></p>",
 								parentId: parent.id,
 							});
-							editor
-								.chain()
-								.focus()
-								.insertContent([
-									{
-										type: "page",
-										attrs: {
-											pageId: String(child.id),
-											title: child.title || "Untitled Page",
+							const attrs = {
+								pageId: String(child.id),
+								title: child.title || "Untitled Page",
+							};
+							if (isInline) {
+								editor
+									.chain()
+									.focus()
+									.insertContent({
+										type: "pageInline",
+										attrs,
+									})
+									.run();
+							} else {
+								editor
+									.chain()
+									.focus()
+									.insertContent([
+										{
+											type: "page",
+											attrs,
 										},
-									},
-									{ type: "paragraph" },
-								])
-								.run();
+										{ type: "paragraph" },
+									])
+									.run();
+							}
 						} catch (error) {
 							console.error("Failed to create page:", error);
 							toast.error("Failed to create page");
@@ -528,6 +546,11 @@ const TiptapEditor = ({
 					onOpenPageRef.current?.(pageId);
 				},
 			}),
+			PageInline.configure({
+				onOpenPage: (pageId) => {
+					onOpenPageRef.current?.(pageId);
+				},
+			}),
 			SlashCommand.configure({
 				suggestion,
 			}),
@@ -545,9 +568,11 @@ const TiptapEditor = ({
 
 	useEffect(() => {
 		if (!editor) return;
+		const onOpenPage = (pageId) => onOpenPageRef.current?.(pageId);
 		if (!editor.storage.page) editor.storage.page = {};
-		editor.storage.page.onOpenPage = (pageId) =>
-			onOpenPageRef.current?.(pageId);
+		if (!editor.storage.pageInline) editor.storage.pageInline = {};
+		editor.storage.page.onOpenPage = onOpenPage;
+		editor.storage.pageInline.onOpenPage = onOpenPage;
 	}, [editor]);
 
 	// Update refs when props change
@@ -870,6 +895,15 @@ const TiptapEditor = ({
 							content: "Start writing your thoughts...";
 							color: ${isDarkMode ? "#71717a" : "#9ca3af"};
 							font-style: normal;
+						}
+						.ProseMirror .node-pageInline {
+							display: inline;
+							vertical-align: baseline;
+						}
+						.ProseMirror .node-pageInline button {
+							font-family: inherit;
+							font-size: inherit;
+							line-height: inherit;
 						}
 					`}</style>
 					<EditorContent editor={editor} />

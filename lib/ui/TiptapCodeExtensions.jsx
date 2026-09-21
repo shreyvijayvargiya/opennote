@@ -518,7 +518,7 @@ const CodeGroupComponent = ({
 												setEditingTabName("");
 											}
 										}}
-										className="flex-1 px-1.5 py-0.5 text-xs bg-white border border-zinc-300 rounded focus:outline-none focus:ring-1 focus:ring-zinc-900 min-w-[60px]"
+										className="flex-1 px-1.5 py-0.5 text-xs bg-white border border-zinc-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-zinc-900 min-w-[60px]"
 										autoFocus
 										onClick={(e) => e.stopPropagation()}
 									/>
@@ -541,7 +541,7 @@ const CodeGroupComponent = ({
 										e.stopPropagation();
 										removeTab(tab.id);
 									}}
-									className="p-0.5 hover:bg-zinc-200 rounded transition-colors ml-1"
+									className="p-0.5 hover:bg-zinc-200 rounded-md transition-colors ml-1"
 									title="Remove tab"
 								>
 									<X className="w-3 h-3" />
@@ -553,7 +553,7 @@ const CodeGroupComponent = ({
 						))}
 						<button
 							onClick={addTab}
-							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded transition-colors ml-1"
+							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded-lg transition-colors ml-1"
 							title="Add tab"
 						>
 							<Plus className="w-3.5 h-3.5" />
@@ -573,14 +573,14 @@ const CodeGroupComponent = ({
 									setActiveTab(tabs.length);
 								}
 							}}
-							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded transition-colors"
+							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded-lg transition-colors"
 							title="Duplicate tab"
 						>
 							<Files className="w-3.5 h-3.5" />
 						</button>
 						<button
 							onClick={deleteNode}
-							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded transition-colors"
+							className="p-1.5 text-zinc-600 hover:bg-zinc-200 rounded-lg transition-colors"
 							title="Delete code group"
 						>
 							<X className="w-3.5 h-3.5" />

@@ -268,6 +268,7 @@ const ImageComponent = ({
 						maxWidth: "100%",
 						height: "auto",
 						display: "block",
+						borderRadius: "12px",
 						border: getBorderValue(getBorderWidth(), borderColor),
 						boxShadow: getShadowValue(getShadowSize(), shadowOpacity),
 						objectFit: objectFit,
@@ -356,7 +357,7 @@ const ImageComponent = ({
 								e.stopPropagation();
 								setIsDropdownOpen(!isDropdownOpen);
 							}}
-							className="p-1.5 bg-white border border-zinc-200 rounded shadow-lg hover:bg-zinc-50 transition-colors"
+							className="p-1.5 bg-white border border-zinc-200 rounded-xl shadow-lg hover:bg-zinc-50 transition-colors"
 							title="Image settings"
 							style={{ zIndex: 1001 }}
 						>
@@ -368,7 +369,7 @@ const ImageComponent = ({
 									initial={{ opacity: 0, y: -10 }}
 									animate={{ opacity: 1, y: 0 }}
 									exit={{ opacity: 0, y: -10 }}
-									className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded shadow-lg min-w-[220px] p-2 max-h-[400px] overflow-y-auto"
+									className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg min-w-[220px] p-2 max-h-[400px] overflow-y-auto"
 									style={{ zIndex: 1002 }}
 								>
 									{/* Border Options */}
@@ -389,7 +390,7 @@ const ImageComponent = ({
 																border: option.value,
 															});
 														}}
-														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors ${
+														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors ${
 															currentWidth === option.value
 																? "bg-zinc-100 font-medium"
 																: "hover:bg-zinc-50"
@@ -418,7 +419,7 @@ const ImageComponent = ({
 															borderColor: color.value,
 														});
 													}}
-													className={`w-full h-8 rounded border-2 transition-all ${
+													className={`w-full h-8 rounded-lg border-2 transition-all ${
 														borderColor === color.value
 															? "border-zinc-900 scale-110"
 															: "border-zinc-200 hover:border-zinc-300"
@@ -451,7 +452,7 @@ const ImageComponent = ({
 																),
 															});
 														}}
-														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors ${
+														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors ${
 															currentSize === option.value
 																? "bg-zinc-100 font-medium"
 																: "hover:bg-zinc-50"
@@ -484,7 +485,7 @@ const ImageComponent = ({
 															),
 														});
 													}}
-													className={`w-full text-left px-2 py-1.5 text-xs rounded transition-colors ${
+													className={`w-full text-left px-2 py-1.5 text-xs rounded-lg transition-colors ${
 														Math.abs(shadowOpacity - option.value) < 0.01
 															? "bg-zinc-100 font-medium"
 															: "hover:bg-zinc-50"
@@ -513,7 +514,7 @@ const ImageComponent = ({
 																objectFit: option.value,
 															});
 														}}
-														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors ${
+														className={`w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors ${
 															objectFit === option.value
 																? "bg-zinc-100 font-medium"
 																: "hover:bg-zinc-50"

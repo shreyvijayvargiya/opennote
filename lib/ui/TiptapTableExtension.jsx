@@ -251,7 +251,7 @@ const TableComponent = ({
 	if (!isMounted || hasError) {
 		return (
 			<NodeViewWrapper className="my-4" data-node-type="table">
-				<div className="p-4 text-zinc-400 text-sm border border-zinc-200 rounded">
+				<div className="p-4 text-zinc-400 text-sm border border-zinc-200 rounded-xl">
 					{hasError ? "Table loading..." : "Loading table..."}
 				</div>
 			</NodeViewWrapper>
@@ -290,7 +290,7 @@ const TableComponent = ({
 								e.stopPropagation();
 								setIsDropdownOpen(!isDropdownOpen);
 							}}
-							className="p-1.5 bg-white border border-zinc-200 rounded shadow-lg hover:bg-zinc-50 transition-colors"
+							className="p-1.5 bg-white border border-zinc-200 rounded-xl shadow-lg hover:bg-zinc-50 transition-colors"
 							title="Table options"
 							style={{ zIndex: 1001 }}
 						>
@@ -298,7 +298,7 @@ const TableComponent = ({
 						</button>
 						{isDropdownOpen && (
 							<div
-								className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded shadow-lg min-w-[200px] p-2 max-h-[400px] overflow-y-auto"
+								className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg min-w-[200px] p-2 max-h-[400px] overflow-y-auto"
 								style={{ zIndex: 1002 }}
 								onClick={(e) => e.stopPropagation()}
 							>
@@ -314,7 +314,7 @@ const TableComponent = ({
 												addColumn(0);
 												setIsDropdownOpen(false);
 											}}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50"
 										>
 											<Plus className="w-3.5 h-3.5 text-zinc-600" />
 											Add Column Before
@@ -324,7 +324,7 @@ const TableComponent = ({
 												addColumn();
 												setIsDropdownOpen(false);
 											}}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50"
 										>
 											<Plus className="w-3.5 h-3.5 text-zinc-600" />
 											Add Column After
@@ -337,7 +337,7 @@ const TableComponent = ({
 												setIsDropdownOpen(false);
 											}}
 											disabled={colCount <= 1}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed"
 										>
 											<Minus className="w-3.5 h-3.5 text-zinc-600" />
 											Delete Column
@@ -357,7 +357,7 @@ const TableComponent = ({
 												addRow(hasHeader ? 1 : 0);
 												setIsDropdownOpen(false);
 											}}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50"
 										>
 											<Plus className="w-3.5 h-3.5 text-zinc-600" />
 											Add Row Before
@@ -367,7 +367,7 @@ const TableComponent = ({
 												addRow();
 												setIsDropdownOpen(false);
 											}}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50"
 										>
 											<Plus className="w-3.5 h-3.5 text-zinc-600" />
 											Add Row After
@@ -380,7 +380,7 @@ const TableComponent = ({
 												setIsDropdownOpen(false);
 											}}
 											disabled={currentRows.length <= 1}
-											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed"
+											className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed"
 										>
 											<Minus className="w-3.5 h-3.5 text-zinc-600" />
 											Delete Row
@@ -396,7 +396,7 @@ const TableComponent = ({
 										toggleHeader();
 										setIsDropdownOpen(false);
 									}}
-									className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-zinc-50"
+									className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-zinc-50"
 								>
 									{hasHeader ? "Remove Header" : "Add Header"}
 								</button>
@@ -409,7 +409,7 @@ const TableComponent = ({
 										deleteTable();
 										setIsDropdownOpen(false);
 									}}
-									className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded transition-colors hover:bg-red-50 text-red-600"
+									className="w-full flex items-center gap-2 text-left px-2 py-1.5 text-xs rounded-lg transition-colors hover:bg-red-50 text-red-600"
 								>
 									<Trash2 className="w-3.5 h-3.5" />
 									Delete Table
@@ -419,13 +419,8 @@ const TableComponent = ({
 					</div>
 
 				{/* Table */}
-				<div className="overflow-x-auto">
-					<table
-						className="w-full border-collapse"
-						style={{
-							border: "1px solid #e4e4e7",
-						}}
-					>
+				<div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+					<table className="w-full border-collapse">
 						{hasHeader && currentRows.length > 0 && (
 							<thead>
 								<tr>

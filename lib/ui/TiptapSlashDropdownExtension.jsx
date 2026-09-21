@@ -209,7 +209,7 @@ export function SlashDropdownMenu({ editor, items = defaultItems() }) {
 				e.preventDefault();
 			}}
 		>
-			<div className="min-w-[220px] max-w-[320px] bg-white border border-zinc-200 rounded-xl shadow-lg overflow-hidden">
+			<div className="min-w-[220px] max-w-[320px] bg-white border border-zinc-200 rounded-xl shadow-lg overflow-hidden p-1">
 					{filtered.length === 0 ? (
 						<div className="px-3 py-2 text-xs text-zinc-500">No commands</div>
 					) : (
@@ -217,7 +217,7 @@ export function SlashDropdownMenu({ editor, items = defaultItems() }) {
 							<button
 								key={item.id}
 								type="button"
-								className="w-full text-left px-3 py-2 text-xs hover:bg-zinc-50 active:bg-zinc-100 flex items-center justify-between"
+								className="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-zinc-50 active:bg-zinc-100 flex items-center justify-between"
 								onClick={() => onPick(item)}
 							>
 								<span className="text-zinc-900 font-medium">{item.title}</span>
