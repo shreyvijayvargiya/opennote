@@ -14,7 +14,6 @@ import {
 	Copy,
 	Trash2,
 	Trash,
-	CalendarCheck,
 	ChevronDown,
 	ChevronRight,
 } from "lucide-react";
@@ -504,16 +503,6 @@ const IndexPage = () => {
 								onChange={(e) => setSearchQuery(e.target.value)}
 							/>
 						</div>
-
-						<Link
-							href="/todos"
-							className="flex items-center gap-2.5 p-2.5 mb-4 rounded-xl hover:bg-white dark:hover:bg-zinc-900 transition-all group"
-						>
-							<CalendarCheck className="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors" />
-							<span className="font-bold text-[11px] text-zinc-500 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">
-								Todos
-							</span>
-						</Link>
 
 						<div className="flex-1 overflow-y-auto -mx-1 px-1 space-y-0.5 scrollbar-hide">
 							{filteredRootNotes.length > 0 ? (

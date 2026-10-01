@@ -57,6 +57,7 @@ import {
 	Info,
 	FileText,
 	ArrowLeft,
+	Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { debounce } from "lodash";
@@ -671,6 +672,21 @@ const TiptapEditor = ({
 		}
 	};
 
+	const handleCopyMarkdown = async () => {
+		if (!editor) return;
+		const body = editor.storage.markdown?.getMarkdown?.() ?? "";
+		const noteTitle = title?.trim() || "Untitled";
+		const text = body.trim()
+			? `# ${noteTitle}\n\n${body.trim()}`
+			: `# ${noteTitle}`;
+		try {
+			await navigator.clipboard.writeText(text);
+			toast.success("Markdown copied — paste into ChatGPT or any AI");
+		} catch {
+			toast.error("Failed to copy markdown");
+		}
+	};
+
 	if (!editor) return null;
 
 	return (
@@ -737,6 +753,14 @@ const TiptapEditor = ({
 							SAVING
 						</div>
 					)}
+					<button
+						type="button"
+						onClick={handleCopyMarkdown}
+						className="p-2 rounded-xl transition-all text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+						title="Copy note as Markdown for ChatGPT or AI"
+					>
+						<Copy className="w-4 h-4" />
+					</button>
 					<button
 						onClick={toggleRecording}
 						className={`p-2 rounded-xl transition-all ${
