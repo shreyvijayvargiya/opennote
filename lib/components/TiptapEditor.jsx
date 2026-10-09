@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import BoldExtension from "@tiptap/extension-bold";
 import Placeholder from "@tiptap/extension-placeholder";
 import TiptapImage from "@tiptap/extension-image";
 import Table from "@tiptap/extension-table";
@@ -58,12 +59,39 @@ import {
 	FileText,
 	ArrowLeft,
 	Copy,
+	Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import { debounce } from "lodash";
 import { useTheme } from "../context/ThemeContext";
 
 import { noteService } from "../db/noteService";
+import SelectionToolbar from "./SelectionToolbar";
+import { registerEditor, unregisterEditor } from "../ai/noteOps";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+
+// ⌘/Ctrl+B toggles the sidebar (RootLayout), so Bold must not claim that shortcut.
+// Bold stays available from the toolbar, the selection menu and **markdown**.
+const BoldNoShortcut = BoldExtension.extend({
+	addKeyboardShortcuts() {
+		return {};
+	},
+});
+
+const downloadFile = (filename, mime, text) => {
+	const url = URL.createObjectURL(new Blob([text], { type: mime }));
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = filename;
+	a.click();
+	URL.revokeObjectURL(url);
+};
+const safeName = (t) => (t || "note").trim().replace(/[\\/:*?"<>|]+/g, "-").slice(0, 80) || "note";
 
 const TiptapEditor = ({
 	initialNote,
@@ -89,6 +117,7 @@ const TiptapEditor = ({
 	const recognitionRef = useRef(null);
 	const onOpenPageRef = useRef(onOpenPage);
 	const initialNoteRef = useRef(initialNote);
+	const apiRef = useRef(null);
 	onOpenPageRef.current = onOpenPage;
 
 	const handleMediaSubmit = () => {
@@ -437,7 +466,8 @@ const TiptapEditor = ({
 
 	const editor = useEditor({
 		extensions: [
-			StarterKit,
+			StarterKit.configure({ bold: false }),
+			BoldNoShortcut,
 			Placeholder.configure({
 				placeholder: "Type / for commands...",
 			}),
@@ -565,6 +595,22 @@ const TiptapEditor = ({
 		onBlur: () => {
 			saveNoteImmediately();
 		},
+		// Let the AI assistant read/write this LIVE editor (not the last IndexedDB save).
+		onCreate: ({ editor }) => {
+			apiRef.current = {
+				editor,
+				getTitle: () => titleRef.current,
+				setTitle: (t) => {
+					setTitle(t);
+					titleRef.current = t;
+				},
+				save: () => saveNoteImmediately(),
+			};
+			registerEditor(initialNoteRef.current.id, apiRef.current);
+		},
+		onDestroy: () => {
+			unregisterEditor(initialNoteRef.current.id, apiRef.current);
+		},
 	});
 
 	useEffect(() => {
@@ -687,6 +733,18 @@ const TiptapEditor = ({
 		}
 	};
 
+	const handleExport = (format) => {
+		if (!editor) return;
+		const noteTitle = title?.trim() || "Untitled";
+		if (format === "md") {
+			const body = (editor.storage.markdown?.getMarkdown?.() ?? "").trim();
+			downloadFile(`${safeName(noteTitle)}.md`, "text/markdown", `# ${noteTitle}\n\n${body}\n`);
+		} else {
+			const page = `<!doctype html><html><head><meta charset="utf-8"><title>${noteTitle.replace(/</g, "&lt;")}</title><style>body{max-width:760px;margin:40px auto;padding:0 16px;font:16px/1.65 system-ui,sans-serif;color:#18181b}img{max-width:100%;border-radius:8px}pre{background:#f4f4f5;padding:12px;border-radius:8px;overflow:auto}code{background:#f4f4f5;padding:2px 4px;border-radius:4px}table{border-collapse:collapse}td,th{border:1px solid #d4d4d8;padding:6px 10px}blockquote{border-left:3px solid #d4d4d8;margin-left:0;padding-left:12px;color:#52525b}</style></head><body><h1>${noteTitle.replace(/</g, "&lt;")}</h1>${editor.getHTML()}</body></html>`;
+			downloadFile(`${safeName(noteTitle)}.html`, "text/html", page);
+		}
+	};
+
 	if (!editor) return null;
 
 	return (
@@ -761,6 +819,25 @@ const TiptapEditor = ({
 					>
 						<Copy className="w-4 h-4" />
 					</button>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<button
+								type="button"
+								className="p-2 rounded-xl transition-all text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 outline-none"
+								title="Download note"
+							>
+								<Download className="w-4 h-4" />
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onSelect={() => handleExport("md")}>
+								Markdown (.md)
+							</DropdownMenuItem>
+							<DropdownMenuItem onSelect={() => handleExport("html")}>
+								HTML (.html)
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 					<button
 						onClick={toggleRecording}
 						className={`p-2 rounded-xl transition-all ${
@@ -931,6 +1008,15 @@ const TiptapEditor = ({
 						}
 					`}</style>
 					<EditorContent editor={editor} />
+					<SelectionToolbar
+						editor={editor}
+						noteId={initialNote.id}
+						noteTitle={title}
+						onLink={() => {
+							setLinkUrl(editor.getAttributes("link").href || "");
+							setShowLinkModal(true);
+						}}
+					/>
 				</div>
 			</div>
 

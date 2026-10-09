@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../styles/globals.css";
 import { ThemeProvider, useTheme } from "../lib/context/ThemeContext";
 import { Toaster } from "sonner";
+import { AppProvider } from "../lib/context/AppContext";
+import RootLayout from "../lib/components/RootLayout";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -22,7 +24,11 @@ const MyApp = ({ Component, pageProps }) => {
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider>
 				<Toaster position="top-right" theme={isDarkMode ? "dark" : "light"} />
-				<Component {...pageProps} />
+				<AppProvider>
+					<RootLayout>
+						<Component {...pageProps} />
+					</RootLayout>
+				</AppProvider>
 			</ThemeProvider>
 		</QueryClientProvider>
 	);
