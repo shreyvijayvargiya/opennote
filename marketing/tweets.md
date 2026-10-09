@@ -1,0 +1,41 @@
+# OpenNote – 20 launch tweets (long format)
+
+1. Most note apps want your notes on their servers. OpenNote doesn't have a server for them to live on. No Firebase, no Supabase, no account. Everything sits in your browser's IndexedDB. Zero latency, zero signup, and nobody but you can read it. Open source, MIT. github.com/shreyvijayvargiya/opennote
+
+2. I built OpenNote because I wanted Claude to read my notes without me uploading them anywhere. It speaks MCP, so an AI agent can list, read, write and semantically search your notes while the data stays on your machine. Your notes. Your machine. Your AI.
+
+3. "Local-first" is easy to say. Here is what it means in OpenNote: the editor works offline, the search runs offline, even the embeddings behind the 3D graph run offline in the browser via Transformers.js. No OpenAI key needed. If your wifi dies, nothing in the app notices.
+
+4. Notion-style editing without Notion-style lock-in. OpenNote has slash commands, tables, task lists, code blocks with highlighting, images, nested pages, and a one-click "copy as Markdown". When you leave, your content leaves with you as plain Markdown.
+
+5. Your notes have a shape, you just never see it. OpenNote's 3D neural map clusters notes by meaning, not by folder. You will find the idea you wrote in March sitting next to the one you wrote last night. All computed locally, no API calls.
+
+6. What MCP actually changes for note-taking: instead of copy-pasting notes into a chat, Claude calls tools. list_notes, get_note, save_note, semantic_search. It finds the right note, reads it, and writes the result back. You stay in your notes, the agent does the legwork.
+
+7. Hot take: AI note apps get it backwards. They bolt a chatbot on top of a cloud database. OpenNote starts from the other end: a private local store, then lets an agent in through a standard protocol, on your terms. You decide what the AI can touch.
+
+8. Writing a launch plan? Ask Claude to tighten it using the research notes in your other project. With OpenNote's MCP tools it can semantic-search your notes, pull the relevant ones, and update the doc. No exports, no uploads, no context-window gymnastics.
+
+9. Nested pages that stay local. Type a slash command, drop a page block inside a page, and you get a real parent/child note tree stored in IndexedDB. No sync conflicts, no spinner, no "reconnecting...". Just your structure, instantly.
+
+10. Voice notes without handing your voice to a vendor. OpenNote records through the Web Speech API in your browser, and if you want it cleaned up, translated or structured, you can optionally pipe it through OpenRouter. Optional is the key word. The default is private.
+
+11. We're building an AI side panel for OpenNote: a chat on the right, your editor in the middle, your files and folders on the left. Ask it to rewrite a section, summarise a folder, or draft from three notes at once. It uses the same MCP tools, so every action is something you can see.
+
+12. The idea behind the AI panel: an agent that knows what's in your workspace. Not a generic chatbot, but something that can see your files and folders, search by meaning, and make edits in place. Think Cursor, but for your thinking instead of your code.
+
+13. Per-project notes for Claude: one folder per project, with the plan, decisions, research and TODOs. Claude reads that context when you start working and updates it when you finish. That is the workflow we're building OpenNote toward, with no database in the middle.
+
+14. Why IndexedDB and not a hosted DB? Because the fastest, cheapest, most private database is the one already in your browser. No hosting bill, no breach to worry about, no "we're shutting down" email. OpenNote costs you nothing to run and nothing to trust.
+
+15. If you've ever lost a note to a sync glitch, you'll get this one. OpenNote has no sync layer to break. One copy, on your machine, written the instant you type. Boring architecture, and boring is exactly what you want from the place your ideas live.
+
+16. Connecting OpenNote to Claude Desktop takes three steps: generate a local key in the app, copy the ready-made JSON config from the settings modal, paste it into claude_desktop_config.json. Restart Claude and your notes show up as tools. The config even detects your project path.
+
+17. Semantic search in OpenNote works on meaning. Search "things I promised the team" and it can surface a meeting note that never contains those words. The embeddings are computed in your browser, so even your search queries stay private.
+
+18. OpenNote is built with Next.js, Tiptap, Dexie, React Query, Three.js, Transformers.js and the MCP SDK. Small codebase, readable, MIT licensed. If you want to see how a local-first AI notes app fits together, or hack on one, it's a great repo to read.
+
+19. Here's what I think the next generation of note apps looks like: private by default, plain-text portable, and agent-ready through open protocols. Not a chatbot in a sidebar, but a workspace your AI can actually operate. OpenNote is my attempt at that. It's early, and it's open.
+
+20. OpenNote is free, open source and local-first. Star it, fork it, tell me what your AI sidebar should do first. What would you want an agent to do inside your notes? Reply with your wishlist and I'll build the best ones. github.com/shreyvijayvargiya/opennote
