@@ -219,12 +219,21 @@ const IndexPage = () => {
 								<Menu className="w-5 h-5" />
 							</button>
 							<h1 className="text-xs font-black tracking-[0.2em] uppercase">OpenNote</h1>
-							<button
-								onClick={handleCreateNote}
-								className="p-3 rounded-2xl bg-zinc-600 text-white shadow-lg shadow-zinc-500/20"
-							>
-								<Plus className="w-5 h-5" />
-							</button>
+							<div className="flex items-center gap-2">
+								<button
+									onClick={app.openChat}
+									className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 text-zinc-500"
+									title="Assistant"
+								>
+									<Sparkles className="w-5 h-5" />
+								</button>
+								<button
+									onClick={handleCreateNote}
+									className="p-3 rounded-2xl bg-zinc-600 text-white shadow-lg shadow-zinc-500/20"
+								>
+									<Plus className="w-5 h-5" />
+								</button>
+							</div>
 						</header>
 
 						{/* Open the assistant (⌘L) */}

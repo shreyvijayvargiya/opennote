@@ -380,9 +380,10 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 
 			<aside
 				className={cn(
-					"fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-100 bg-zinc-50/50 transition-all duration-500 dark:border-zinc-900 dark:bg-zinc-950 md:relative",
-					app.sidebarOpen ? "translate-x-0" : "-translate-x-full",
-					app.sidebarCollapsed ? "md:-ml-72" : "md:ml-0",
+					// floating rounded card (style from main)
+					"fixed bottom-2 left-2 top-2 z-50 flex w-[min(18rem,calc(100%-1rem))] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-transform duration-300 dark:border-zinc-800 dark:bg-zinc-950 md:static md:z-auto md:my-2 md:ml-2 md:h-[calc(100%-1rem)] md:w-72 md:shrink-0",
+					app.sidebarOpen ? "translate-x-0" : "-translate-x-[120%] md:translate-x-0",
+					app.sidebarCollapsed && "md:hidden",
 				)}
 			>
 				<div className="flex h-full flex-col p-5">

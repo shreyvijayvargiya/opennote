@@ -27,7 +27,7 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
 ### Prerequisites
 
 - Node.js 18+
-- OpenRouter API Key (Optional: only needed for the "Translate & Add" AI voice feature)
+- OpenRouter API Key (Optional: only needed for the AI assistant; paste it in the chat panel, it stays in your browser)
 
 ### Installation
 
