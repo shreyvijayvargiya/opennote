@@ -7,7 +7,6 @@ import {
 	FileText,
 	FilePlus,
 	Pencil,
-	Quote,
 	Trash2,
 	Undo2,
 } from "lucide-react";
@@ -54,7 +53,7 @@ const ChangeCard = ({ change, onKeep, onUndo }) => {
 					>
 						<Undo2 /> Undo
 					</Button>
-					<Button size="sm" onClick={onKeep}>
+					<Button variant="gray" size="sm" onClick={onKeep}>
 						<Check /> Keep
 					</Button>
 				</>
@@ -63,7 +62,7 @@ const ChangeCard = ({ change, onKeep, onUndo }) => {
 	);
 };
 
-const MessageItem = ({ message, streaming, onKeep, onUndo }) => {
+const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview }) => {
 	const isUser = message.role === "user";
 	const copy = async () => {
 		await navigator.clipboard.writeText(message.content || "");
@@ -72,25 +71,22 @@ const MessageItem = ({ message, streaming, onKeep, onUndo }) => {
 
 	return (
 		<div className={cn("group flex flex-col gap-1.5", isUser ? "items-end" : "items-start")}>
-			{(message.contexts?.length > 0 || message.attachments?.length > 0) && (
+			{message.attachments?.length > 0 && (
 				<div className="flex max-w-[92%] flex-wrap justify-end gap-1">
-					{message.contexts?.map((c, i) => (
-						<span
-							key={i}
-							className="inline-flex items-center gap-1 rounded-full border bg-muted/50 px-2 py-0.5 text-[10px] text-muted-foreground"
-						>
-							{c.kind === "selection" ? <Quote className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
-							{c.title}
-						</span>
-					))}
 					{message.attachments?.map((a) =>
 						a.kind === "image" ? (
-							<img
+							<button
 								key={a.id}
-								src={a.thumb}
-								alt={a.name}
-								className="h-14 w-14 rounded-lg border object-cover"
-							/>
+								type="button"
+								title="Preview"
+								onClick={() => onPreview({ src: a.dataUrl || a.preview || a.thumb, name: a.name })}
+							>
+								<img
+									src={a.thumb}
+									alt={a.name}
+									className="h-14 w-14 rounded-lg border object-cover transition-opacity hover:opacity-80"
+								/>
+							</button>
 						) : (
 							<span
 								key={a.id}
@@ -108,7 +104,7 @@ const MessageItem = ({ message, streaming, onKeep, onUndo }) => {
 				<div
 					className={cn(
 						"max-w-[92%] break-words rounded-2xl px-3.5 py-2 text-sm",
-						isUser ? "whitespace-pre-wrap bg-secondary" : "px-0",
+						isUser ? "whitespace-pre-wrap bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-100" : "px-0",
 					)}
 				>
 					{isUser ? (

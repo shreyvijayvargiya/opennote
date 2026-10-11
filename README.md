@@ -81,6 +81,8 @@ Open it with **⌘/Ctrl + L** (or the *Ask AI* button), then add your OpenRouter
 | **Attachments** | `+` button, drag & drop, or paste: images (copy/paste works), PDF (parsed by OpenRouter) and CSV. |
 | **Dictation** | Mic button in the input (Web Speech API). |
 | **History** | Clock icon: up to **10** chats × **50** messages are kept in IndexedDB (oldest pruned). Delete one or all. |
+| **Image preview** | Click any image (in the input or a message) to open it full size. Right-click, or use `⌘/Ctrl+C` (copy) / `⌘/Ctrl+S` (download) / `Esc` (close). These keys are only active while the preview is open. |
+| **Export chat** | Download icon in the chat header: Markdown or HTML. |
 | **Copy & time** | Every message has a timestamp and a copy button. |
 
 **The AI reads the live editor, not the database.** Open notes are read from (and written to) the Tiptap editor, so unsaved typing is included. Only notes that are not open fall back to IndexedDB. The system prompt contains the folder/page tree (with ids) so the model understands your structure, and nested pages show up as `[Title](page://id)` links.
@@ -104,6 +106,7 @@ Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hot
 | `⌘/Ctrl + B` | Toggle the left sidebar (Bold keeps its toolbar button; its shortcut is disabled) |
 | `Enter` / `Shift + Enter` | Send / new line in the chat input |
 | `@` | Tag a note in the chat input |
+| `Esc`, `⌘/Ctrl+C`, `⌘/Ctrl+S` | Close / copy / download, **only while the image preview is open** |
 
 ## Sidebar & Split View
 
@@ -127,7 +130,7 @@ Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hot
 
 | Module | Used for |
 | --- | --- |
-| `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-slot` | shadcn-style dialog, dropdown (history, model picker, add menu) and button |
+| `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-context-menu`, `@radix-ui/react-slot` | shadcn-style dialog, dropdowns (history, model picker, add menu), image right-click menu and button |
 | `class-variance-authority`, `clsx`, `tailwind-merge` | `cn()` helper and component variants |
 | `react-hotkeys-hook` | global shortcuts (⌘L, ⌘B) |
 | `@dnd-kit/core` | sidebar drag & drop |
@@ -151,8 +154,9 @@ lib/
     tools.js              read / create / update / delete note tools
     noteOps.js            Live-editor registry, Markdown <-> HTML, tree outline, 2k-token context
     attachments.js        Image / PDF / CSV processing
+    exportChat.js         Chat -> Markdown / HTML
   components/
-    chat/                 ChatPanel, ChatInput, MessageItem
+    chat/                 ChatPanel, ChatInput, MessageItem, ImagePreview
     ui/                   shadcn-style button, dialog, dropdown-menu
     Sidebar.jsx           Tree, search, add, drag & drop, delete dialog
     SelectionToolbar.jsx  Floating toolbar on text selection

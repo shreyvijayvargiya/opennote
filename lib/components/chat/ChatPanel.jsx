@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+	Download,
 	History,
 	Key,
 	MessageSquarePlus,
@@ -25,6 +26,8 @@ import {
 	DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import ChatInput from "./ChatInput";
+import ImagePreview from "./ImagePreview";
+import { chatToHtml, chatToMarkdown, downloadText } from "../../ai/exportChat";
 import MessageItem from "./MessageItem";
 import { useChat, MAX_CHATS } from "../../ai/useChat";
 import { useApp } from "../../context/AppContext";
@@ -48,7 +51,7 @@ const KeyForm = ({ initial, onSave, onRemove }) => {
 				className="h-9 rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
 			/>
 			<div className="flex gap-2">
-				<Button type="submit" size="sm" disabled={!key.trim()}>
+				<Button type="submit" size="sm" variant="gray" disabled={!key.trim()}>
 					Save key
 				</Button>
 				{initial && onRemove && (
@@ -77,6 +80,7 @@ const ChatPanel = ({ notes }) => {
 	const app = useApp();
 	const chat = useChat({ notes, activeNoteId: app.activeId, openIds: app.openIds });
 	const [keyDialog, setKeyDialog] = useState(false);
+	const [preview, setPreview] = useState(null); // { src, name } for the image modal
 	const streaming = chat.status === "streaming";
 
 	return (
@@ -93,6 +97,26 @@ const ChatPanel = ({ notes }) => {
 				<div className="flex h-12 shrink-0 items-center gap-1 border-b px-3">
 					<Sparkles className="h-4 w-4 text-muted-foreground" />
 					<span className="flex-1 text-sm font-semibold">Assistant</span>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" size="icon" title="Export chat" disabled={chat.messages.length === 0}>
+								<Download />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								onSelect={() => downloadText("opennote-chat.md", "text/markdown", chatToMarkdown(chat.messages))}
+							>
+								Markdown (.md)
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onSelect={() => downloadText("opennote-chat.html", "text/html", chatToHtml(chat.messages))}
+							>
+								HTML (.html)
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 
 					<DropdownMenu onOpenChange={chat.setHistoryOpen}>
 						<DropdownMenuTrigger asChild>
@@ -173,22 +197,11 @@ const ChatPanel = ({ notes }) => {
 							</p>
 							<KeyForm onSave={chat.saveApiKey} />
 						</div>
-					) : chat.messages.length === 0 ? (
-						<div className="mt-12 space-y-2 text-center text-xs text-muted-foreground">
-							<p className="text-sm font-medium text-foreground">Ask about your notes</p>
-							<p>
-								Type <kbd className="rounded border px-1">@</kbd> to tag a note · paste images ·
-								attach PDF / CSV
-							</p>
-							<p>
-								<kbd className="rounded border px-1">⌘</kbd> <kbd className="rounded border px-1">L</kbd>{" "}
-								focuses this chat
-							</p>
-						</div>
 					) : (
 						<div className="flex flex-col gap-5">
 							{chat.messages.map((m, i) => (
 								<MessageItem
+									onPreview={setPreview}
 									key={m.id}
 									message={m}
 									streaming={streaming && i === chat.messages.length - 1}
@@ -205,6 +218,7 @@ const ChatPanel = ({ notes }) => {
 				{/* Input */}
 				<div className="shrink-0 p-3 pt-0">
 					<ChatInput
+						onPreview={setPreview}
 						notes={notes}
 						model={chat.model}
 						onModelChange={chat.setModel}
@@ -221,6 +235,8 @@ const ChatPanel = ({ notes }) => {
 					/>
 				</div>
 			</div>
+
+			{preview && <ImagePreview image={preview} onClose={() => setPreview(null)} />}
 
 			{/* API key dialog */}
 			<Dialog open={keyDialog} onOpenChange={setKeyDialog}>

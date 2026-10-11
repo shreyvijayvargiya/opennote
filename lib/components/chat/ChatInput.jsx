@@ -25,23 +25,33 @@ import { MODELS } from "../../ai/openrouter";
 import { processFile } from "../../ai/attachments";
 import { cn } from "../../utils/cn";
 
-const AttachmentChip = ({ a, onRemove }) => (
-	<div className="group relative flex h-12 items-center gap-2 rounded-xl border bg-muted/50 pl-1.5 pr-7 text-xs">
+const CloseDot = ({ onClick }) => (
+	<button
+		type="button"
+		onClick={onClick}
+		className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-500 text-white shadow-sm transition-colors hover:bg-zinc-600"
+	>
+		<X className="h-2.5 w-2.5" />
+	</button>
+);
+
+const AttachmentChip = ({ a, onRemove, onPreview }) => (
+	<div className="relative flex h-12 items-center gap-2 rounded-xl border bg-muted/50 pl-1.5 pr-3 text-xs">
 		{a.kind === "image" ? (
-			<img src={a.thumb} alt={a.name} className="h-9 w-9 rounded-lg object-cover" />
+			<button
+				type="button"
+				title="Preview"
+				onClick={() => onPreview({ src: a.dataUrl || a.preview || a.thumb, name: a.name })}
+			>
+				<img src={a.thumb} alt={a.name} className="h-9 w-9 rounded-lg object-cover" />
+			</button>
 		) : (
 			<span className="flex h-9 w-9 items-center justify-center rounded-lg bg-background text-muted-foreground">
 				{a.kind === "pdf" ? <FileText className="h-4 w-4" /> : <FileSpreadsheet className="h-4 w-4" />}
 			</span>
 		)}
 		<span className="max-w-[110px] truncate">{a.name}</span>
-		<button
-			type="button"
-			onClick={onRemove}
-			className="absolute right-1.5 top-1.5 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
-		>
-			<X className="h-3 w-3" />
-		</button>
+		<CloseDot onClick={onRemove} />
 	</div>
 );
 
@@ -55,6 +65,7 @@ const ChatInput = ({
 	inputRef,
 	selections,
 	onRemoveSelection,
+	onPreview,
 }) => {
 	const [value, setValue] = useState("");
 	const [attachments, setAttachments] = useState([]);
@@ -215,24 +226,18 @@ const ChatInput = ({
 			}}
 		>
 			{(attachments.length > 0 || selections.length > 0) && (
-				<div className="mb-2 flex flex-wrap gap-1.5">
+				<div className="mb-2 flex flex-wrap gap-2 pr-1.5 pt-1.5">
 					{selections.map((s) => (
 						<div
 							key={s.id}
-							className="relative flex h-12 max-w-[220px] items-center gap-2 rounded-xl border bg-muted/50 pl-2 pr-7 text-xs"
+							className="relative flex h-12 max-w-[220px] items-center gap-2 rounded-xl border bg-muted/50 pl-2 pr-3 text-xs"
 							title={s.text}
 						>
 							<Quote className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
 							<span className="line-clamp-2 text-muted-foreground">
 								<b className="text-foreground">{s.title}</b> · {s.text}
 							</span>
-							<button
-								type="button"
-								onClick={() => onRemoveSelection(s.id)}
-								className="absolute right-1.5 top-1.5 rounded-full p-0.5 text-muted-foreground hover:text-foreground"
-							>
-								<X className="h-3 w-3" />
-							</button>
+							<CloseDot onClick={() => onRemoveSelection(s.id)} />
 						</div>
 					))}
 					{attachments.map((a) => (
@@ -240,6 +245,7 @@ const ChatInput = ({
 							key={a.id}
 							a={a}
 							onRemove={() => setAttachments((p) => p.filter((x) => x.id !== a.id))}
+							onPreview={onPreview}
 						/>
 					))}
 				</div>
@@ -354,11 +360,12 @@ const ChatInput = ({
 					<Mic className={cn(listening && "animate-pulse")} />
 				</Button>
 				{streaming ? (
-					<Button size="icon" className="rounded-full" onClick={onStop} title="Stop">
+					<Button variant="gray" size="icon" className="rounded-full" onClick={onStop} title="Stop">
 						<Square className="fill-current" />
 					</Button>
 				) : (
 					<Button
+						variant="gray"
 						size="icon"
 						className="rounded-full"
 						disabled={!canSend}

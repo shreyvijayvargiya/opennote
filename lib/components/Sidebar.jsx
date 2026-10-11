@@ -18,6 +18,7 @@ import {
 	FileText,
 	Folder,
 	FolderPlus,
+	GripVertical,
 	Menu,
 	Moon,
 	Network,
@@ -114,7 +115,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 				{...drag.listeners}
 				{...drag.attributes}
 				className={cn(
-					"group relative flex w-full items-center rounded-xl text-left transition-all",
+					"group relative flex w-full cursor-grab items-center rounded-xl text-left transition-all active:cursor-grabbing",
 					isActive
 						? "bg-white shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800"
 						: isOpen
@@ -142,7 +143,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 				<button
 					type="button"
 					onClick={() => onSelect(note.id)}
-					className="flex min-w-0 flex-1 items-center gap-1.5 p-2.5 pr-14 text-left"
+					className="flex min-w-0 flex-1 items-center gap-1.5 p-2.5 pr-20 text-left"
 				>
 					<Icon className="h-3 w-3 flex-shrink-0 text-zinc-400" />
 					<span
@@ -155,6 +156,9 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 					</span>
 				</button>
 				<div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center opacity-0 transition-opacity group-hover:opacity-100">
+					<span title="Drag to move into another note or folder" className="p-1 text-zinc-300">
+						<GripVertical className="h-3 w-3" />
+					</span>
 					<button
 						type="button"
 						title="Open to the side"
