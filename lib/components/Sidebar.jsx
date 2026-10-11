@@ -277,7 +277,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 	// Ancestors of the open notes are expanded by default (derived, no effect needed).
 	const defaultExpanded = useMemo(() => {
 		const set = new Set();
-		for (const id of app.openIds) {
+		for (const id of app.tabIds) {
 			let current = byId.get(id);
 			const seen = new Set();
 			while (current?.parentId != null && !seen.has(current.id)) {
@@ -287,7 +287,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 			}
 		}
 		return set;
-	}, [app.openIds, byId]);
+	}, [app.tabIds, byId]);
 	const expandedFor = useCallback(
 		(id) => (expandOverrides.has(id) ? expandOverrides.get(id) : defaultExpanded.has(id)),
 		[expandOverrides, defaultExpanded],
@@ -330,8 +330,8 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 		if (!target) return;
 		try {
 			await noteService.deleteNote(target.id);
-			for (const id of app.openIds) {
-				if (isSelfOrDescendant(id, target.id, byId)) app.closePane(id);
+			for (const id of app.tabIds) {
+				if (isSelfOrDescendant(id, target.id, byId)) app.closeNote(id);
 			}
 			toast.success("Deleted");
 		} catch {
@@ -458,7 +458,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 										childrenByParent={childrenByParent}
 										visibleIds={visibleIds}
 										activeId={app.activeId}
-										openIds={app.openIds}
+										openIds={app.tabIds}
 										searchQuery={searchQuery}
 										onToggle={setExpanded}
 										onSelect={handleSelect}

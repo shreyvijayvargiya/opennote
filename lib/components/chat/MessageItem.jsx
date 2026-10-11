@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { cn } from "../../utils/cn";
+import { splitTags, TAG_CLASS } from "../../ai/mentions";
 
 const time = (ts) =>
 	new Date(ts).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
@@ -62,7 +63,7 @@ const ChangeCard = ({ change, onKeep, onUndo }) => {
 	);
 };
 
-const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview }) => {
+const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview, onOpenNote }) => {
 	const isUser = message.role === "user";
 	const copy = async () => {
 		await navigator.clipboard.writeText(message.content || "");
@@ -108,7 +109,26 @@ const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview }) => {
 					)}
 				>
 					{isUser ? (
-						message.content
+						splitTags(
+							message.content,
+							(message.contexts || [])
+								.filter((c) => c.kind === "note")
+								.map((c) => ({ id: c.noteId, title: c.title })),
+						).map((part, i) =>
+							part.id != null ? (
+								<button
+									key={i}
+									type="button"
+									title="Open note"
+									onClick={() => onOpenNote?.(part.id)}
+									className={cn(TAG_CLASS, "cursor-pointer hover:opacity-80")}
+								>
+									{part.text}
+								</button>
+							) : (
+								<React.Fragment key={i}>{part.text}</React.Fragment>
+							),
+						)
 					) : message.content ? (
 						<div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1.5 prose-pre:my-2 prose-ul:my-1.5 prose-headings:my-2">
 							<ReactMarkdown>{message.content}</ReactMarkdown>

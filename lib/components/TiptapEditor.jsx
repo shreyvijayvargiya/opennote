@@ -60,6 +60,8 @@ import {
 	ArrowLeft,
 	Copy,
 	Download,
+	Columns2,
+	Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { debounce } from "lodash";
@@ -72,6 +74,8 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
@@ -99,6 +103,9 @@ const TiptapEditor = ({
 	breadcrumb = [],
 	onNavigateNote,
 	onOpenPage,
+	splitCandidates = [],
+	onSplitPick,
+	onSplitNew,
 }) => {
 	const { isDarkMode } = useTheme();
 	const user = { uid: "local-user" }; // Mock local user
@@ -836,6 +843,35 @@ const TiptapEditor = ({
 							<DropdownMenuItem onSelect={() => handleExport("html")}>
 								HTML (.html)
 							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<button
+								type="button"
+								className="p-2 rounded-xl transition-all text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 outline-none"
+								title="Split view: open another note beside this one"
+							>
+								<Columns2 className="w-4 h-4" />
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end" className="w-60">
+							<DropdownMenuLabel>Open beside this note</DropdownMenuLabel>
+							<DropdownMenuItem onSelect={() => onSplitNew?.()}>
+								<Plus /> New note
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<div className="max-h-56 overflow-y-auto">
+								{splitCandidates.length === 0 && (
+									<div className="px-2.5 py-2 text-xs text-muted-foreground">No other notes</div>
+								)}
+								{splitCandidates.slice(0, 30).map((n) => (
+									<DropdownMenuItem key={n.id} onSelect={() => onSplitPick?.(n.id)}>
+										<FileText />
+										<span className="truncate">{n.title || "Untitled"}</span>
+									</DropdownMenuItem>
+								))}
+							</div>
 						</DropdownMenuContent>
 					</DropdownMenu>
 					<button

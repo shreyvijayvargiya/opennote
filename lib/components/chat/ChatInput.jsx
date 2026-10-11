@@ -23,6 +23,7 @@ import {
 } from "../ui/dropdown-menu";
 import { MODELS } from "../../ai/openrouter";
 import { processFile } from "../../ai/attachments";
+import { splitTags, TAG_CLASS } from "../../ai/mentions";
 import { cn } from "../../utils/cn";
 
 const CloseDot = ({ onClick }) => (
@@ -66,12 +67,15 @@ const ChatInput = ({
 	selections,
 	onRemoveSelection,
 	onPreview,
+	onOpenNote,
 }) => {
 	const [value, setValue] = useState("");
 	const [attachments, setAttachments] = useState([]);
 	const [mentions, setMentions] = useState([]); // [{ id, title }]
 	const [mention, setMention] = useState(null); // { query, start, top, left, index }
 	const [listening, setListening] = useState(false);
+	const [scrollTop, setScrollTop] = useState(0);
+	const mirrorRef = React.useRef(null);
 	const recRef = React.useRef(null);
 	const fileRef = React.useRef(null);
 
@@ -123,6 +127,20 @@ const ChatInput = ({
 			el.focus();
 			el.setSelectionRange(pos, pos);
 		});
+	};
+
+	/* ---------- tagged notes: highlighted inline, click to open ---------- */
+	// The textarea text is transparent; a mirror layer behind it paints the same
+	// text with the tags coloured (colour only, so glyph widths never change).
+	const tagUnderPointer = (e) => {
+		for (const el of mirrorRef.current?.querySelectorAll("[data-tag]") || []) {
+			for (const r of el.getClientRects()) {
+				if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+					return el.getAttribute("data-tag");
+				}
+			}
+		}
+		return null;
 	};
 
 	/* ---------- attachments ---------- */
@@ -252,6 +270,23 @@ const ChatInput = ({
 			)}
 
 			<div className="relative">
+				<div ref={mirrorRef} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+					<div
+						className="whitespace-pre-wrap break-words px-2 py-1.5 text-sm text-foreground"
+						style={{ transform: `translateY(-${scrollTop}px)` }}
+					>
+						{splitTags(value, mentions).map((part, i) =>
+							part.id != null ? (
+								<span key={i} data-tag={part.id} className={TAG_CLASS}>
+									{part.text}
+								</span>
+							) : (
+								<span key={i}>{part.text}</span>
+							),
+						)}
+						{"\u200b"}
+					</div>
+				</div>
 				<textarea
 					ref={inputRef}
 					value={value}
@@ -262,13 +297,24 @@ const ChatInput = ({
 						autosize();
 						detectMention(e.target);
 					}}
+					onScroll={(e) => setScrollTop(e.target.scrollTop)}
 					onKeyDown={onKeyDown}
 					onKeyUp={(e) => {
 						if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) detectMention(e.target);
 					}}
-					onClick={(e) => detectMention(e.target)}
+					onClick={(e) => {
+						const tagId = tagUnderPointer(e);
+						if (tagId != null && e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
+							return onOpenNote?.(tagId);
+						}
+						detectMention(e.target);
+					}}
+					onMouseMove={(e) => {
+						e.currentTarget.style.cursor = tagUnderPointer(e) != null ? "pointer" : "text";
+					}}
 					onPaste={onPaste}
-					className="block max-h-[200px] w-full resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground"
+					style={{ scrollbarWidth: "none" }}
+					className="relative block max-h-[200px] w-full resize-none bg-transparent px-2 py-1.5 text-sm text-transparent caret-zinc-800 outline-none placeholder:text-muted-foreground dark:caret-zinc-100 [&::-webkit-scrollbar]:hidden"
 				/>
 
 				{mention && (

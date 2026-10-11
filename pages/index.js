@@ -18,6 +18,7 @@ import { db as localDb } from "../lib/db/localDb";
 import TiptapEditor from "../lib/components/TiptapEditor";
 import Sidebar from "../lib/components/Sidebar";
 import ChatPanel from "../lib/components/chat/ChatPanel";
+import TabBar from "../lib/components/TabBar";
 import { useTheme } from "../lib/context/ThemeContext";
 import { useApp } from "../lib/context/AppContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -129,11 +130,18 @@ const IndexPage = () => {
 	const notes =
 		useLiveQuery(() => noteService.getAllNotes(user?.uid), [user?.uid]) || [];
 
-	/* ---------- panes (max 2 open notes, split view) ---------- */
+	/* ---------- editor groups: max 2 (split view), each with tabs ---------- */
 	const byId = useMemo(() => new Map(notes.map((n) => [n.id, n])), [notes]);
-	// Panes whose note was deleted (by the user or the AI) simply drop out.
-	const panes = app.openIds.filter((id) => byId.has(id));
-	const activeId = panes.includes(app.activeId) ? app.activeId : (panes[0] ?? null);
+	// Tabs whose note was deleted (by the user or the AI) simply drop out.
+	const viewGroups = app.groups
+		.map((g) => {
+			const tabs = g.tabs.filter((id) => byId.has(id));
+			return { tabs, active: tabs.includes(g.active) ? g.active : tabs.at(-1) };
+		})
+		.map((g, i) => ({ ...g, index: i }))
+		.filter((g) => g.tabs.length);
+	const activeGroup = Math.min(app.activeGroup, viewGroups.length - 1);
+	const splitCandidates = [...notes].sort((a, b) => b.updatedAt - a.updatedAt);
 
 	const getBreadcrumb = (id) => {
 		const path = [];
@@ -249,52 +257,54 @@ const IndexPage = () => {
 						)}
 
 						<div className="flex-1 h-full overflow-hidden flex flex-col">
-							{panes.length > 0 ? (
+							{viewGroups.length > 0 ? (
 								<PanelGroup direction="horizontal" className="h-full">
-									{panes.map((id, i) => {
-										const note = byId.get(id);
+									{viewGroups.map((group, i) => {
+										const note = byId.get(group.active);
 										return (
-											<React.Fragment key={id}>
+											<React.Fragment key={group.index}>
 												{i > 0 && (
-													<PanelResizeHandle className="w-px bg-zinc-100 transition-colors hover:bg-indigo-400 data-[resize-handle-state=drag]:bg-indigo-500 dark:bg-zinc-900 relative before:absolute before:inset-y-0 before:-left-1.5 before:-right-1.5 before:content-['']" />
+													<PanelResizeHandle className="group/handle relative flex w-1.5 items-center justify-center outline-none">
+														{/* thin line + a grip in the middle; both turn indigo on hover / drag */}
+														<div className="h-full w-px bg-zinc-100 transition-colors group-hover/handle:bg-indigo-400 group-data-[resize-handle-state=drag]/handle:bg-indigo-500 dark:bg-zinc-900 dark:group-hover/handle:bg-indigo-400" />
+														<div className="absolute top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-zinc-200 transition-colors group-hover/handle:bg-indigo-400 group-data-[resize-handle-state=drag]/handle:bg-indigo-500 dark:bg-zinc-800" />
+													</PanelResizeHandle>
 												)}
-												<Panel id={String(id)} order={i} minSize={25}>
+												<Panel id={`group-${group.index}`} order={i} minSize={25} maxSize={75}>
 													<div
 														className="h-full flex flex-col"
-														onPointerDownCapture={() => app.setActiveId(id)}
+														onPointerDownCapture={() => app.setActiveGroup(i)}
 													>
-														{panes.length > 1 && (
-															<div
-																className={`flex h-8 shrink-0 items-center justify-between border-b px-3 text-[11px] ${
-																	id === activeId
-																		? "border-b-indigo-400 text-zinc-700 dark:text-zinc-200"
-																		: "border-zinc-100 text-zinc-400 dark:border-zinc-900"
-																}`}
-															>
-																<span className="truncate font-semibold">
-																	{note.title || "Untitled"}
-																</span>
-																<button
-																	onClick={() => app.closePane(id)}
-																	className="rounded p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-																	title="Close pane"
-																>
-																	<X className="h-3 w-3" />
-																</button>
-															</div>
-														)}
+														<TabBar
+															tabs={group.tabs}
+															active={group.active}
+															byId={byId}
+															isActiveGroup={viewGroups.length > 1 && i === activeGroup}
+															onSelect={(id) => app.activateTab(group.index, id)}
+															onClose={(id) => app.closeTab(group.index, id)}
+															onNew={handleCreateNote}
+														/>
 														<motion.div
 															key={note.id}
-															initial={{ opacity: 0, x: 20 }}
+															initial={{ opacity: 0, x: 12 }}
 															animate={{ opacity: 1, x: 0 }}
-															transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+															transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
 															className="flex-1 min-h-0 flex flex-col"
 														>
 															<TiptapEditor
 																initialNote={note}
-																breadcrumb={getBreadcrumb(id)}
+																breadcrumb={getBreadcrumb(note.id)}
 																onNavigateNote={app.openNote}
 																onOpenPage={app.openNote}
+																splitCandidates={splitCandidates.filter((n) => n.id !== note.id)}
+																onSplitPick={app.openSplit}
+																onSplitNew={async () => {
+																	const created = await noteService.saveNote(user.uid, {
+																		title: "Untitled Note",
+																		content: "<p>Start typing...</p>",
+																	});
+																	app.openSplit(created.id);
+																}}
 																onUpdate={() => {
 																	// Local state is updated via useLiveQuery automatically
 																}}

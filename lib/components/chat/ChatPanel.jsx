@@ -87,12 +87,15 @@ const ChatPanel = ({ notes }) => {
 		<aside
 			aria-hidden={!app.chatOpen}
 			className={cn(
-				"z-40 shrink-0 overflow-hidden bg-background transition-[width,transform] duration-300",
-				"fixed inset-y-0 right-0 w-full sm:static sm:border-l",
-				app.chatOpen ? "translate-x-0 sm:w-[400px]" : "pointer-events-none translate-x-full sm:w-0 sm:translate-x-0 sm:border-l-0",
+				// floating rounded card, same look as the sidebar
+				"z-40 shrink-0 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-[width,transform,margin,opacity] duration-300 dark:border-zinc-800 dark:bg-zinc-950",
+				"fixed bottom-2 right-2 top-2 w-[min(25rem,calc(100%-1rem))] sm:static sm:z-auto sm:my-2 sm:mr-2 sm:h-[calc(100%-1rem)]",
+				app.chatOpen
+					? "translate-x-0 sm:w-[25rem]"
+					: "pointer-events-none translate-x-[120%] sm:mr-0 sm:w-0 sm:translate-x-0 sm:border-0 sm:opacity-0",
 			)}
 		>
-			<div className="flex h-full w-full flex-col sm:w-[400px]">
+			<div className="flex h-full w-full flex-col sm:w-[25rem]">
 				{/* Header */}
 				<div className="flex h-12 shrink-0 items-center gap-1 border-b px-3">
 					<Sparkles className="h-4 w-4 text-muted-foreground" />
@@ -202,6 +205,7 @@ const ChatPanel = ({ notes }) => {
 							{chat.messages.map((m, i) => (
 								<MessageItem
 									onPreview={setPreview}
+									onOpenNote={app.openNote}
 									key={m.id}
 									message={m}
 									streaming={streaming && i === chat.messages.length - 1}
@@ -219,6 +223,7 @@ const ChatPanel = ({ notes }) => {
 				<div className="shrink-0 p-3 pt-0">
 					<ChatInput
 						onPreview={setPreview}
+						onOpenNote={app.openNote}
 						notes={notes}
 						model={chat.model}
 						onModelChange={chat.setModel}

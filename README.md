@@ -17,7 +17,7 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
 - **Model Context Protocol (MCP)**: Seamlessly connect your local notes to Claude Desktop, allowing AI agents to search and read your private notes without them ever leaving your computer.
 - **Voice-to-Text**: Record notes via the Web Speech API and optionally process them with OpenRouter for clean-up, translation, and structuring.
 - **AI Assistant (right panel)**: A Claude-style chat that reads and edits your notes. Bring your own [OpenRouter](https://openrouter.ai) key and pick any model from the input. See [AI Assistant](#ai-assistant).
-- **Split view**: Open up to 2 notes side by side with a draggable divider.
+- **Tabs + split view**: every open note gets a tab above the breadcrumbs. Split into up to 2 tab groups side by side (split icon next to download, or the split icon on a sidebar row). Drag the divider to resize (25-75%); it highlights on hover.
 - **Sidebar**: nested notes and folders, drag & drop to move notes, create inside the active note, confirm-before-delete.
 - **Selection toolbar**: select text for Bold, Italic, Link, List, Heading, Copy and **Ask AI**.
 - **Export**: download any note as Markdown (`.md`) or HTML (`.html`) next to the copy button.
@@ -76,7 +76,7 @@ Open it with **⌘/Ctrl + L** (or the *Ask AI* button), then add your OpenRouter
 | Feature | How it works |
 | --- | --- |
 | **Models** | Dropdown inside the chat input. Edit the list in `lib/ai/openrouter.js` (`MODELS`). |
-| **Tag notes** | Type `@` and pick a note; the list opens at the cursor. Tagged notes are injected into the prompt. |
+| **Tag notes** | Type `@` and pick a note; the list opens at the cursor. Tagged notes are highlighted in the input and in sent messages, and clicking one opens that note. They are injected into the prompt. |
 | **Ask AI** | Select text in an editor, click **Ask AI**: the text is attached to the chat with its note id. |
 | **Attachments** | `+` button, drag & drop, or paste: images (copy/paste works), PDF (parsed by OpenRouter) and CSV. |
 | **Dictation** | Mic button in the input (Web Speech API). |
@@ -108,11 +108,12 @@ Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hot
 | `@` | Tag a note in the chat input |
 | `Esc`, `⌘/Ctrl+C`, `⌘/Ctrl+S` | Close / copy / download, **only while the image preview is open** |
 
-## Sidebar & Split View
+## Sidebar, Tabs & Split View
 
 - **New note / folder**: the `+` next to search creates at the top level, or *inside the active note* when one is open.
 - **Drag & drop** ([dnd-kit](https://dndkit.com)): drop a note on another to nest it; drop it on the "Move to top level" strip to un-nest.
-- **Split view**: hover a note and click the split icon to open it beside the current one (max 2 panes, drag the divider to resize).
+- **Tabs**: opening a note adds a tab (up to 10 per group). Middle-click or `x` closes it; `+` creates a note.
+- **Split view** (max 2 groups): use the split icon in the editor header (pick or create a note to open beside) or the split icon on a sidebar row. Each group has its own tabs. Drag the divider to resize; widths are limited to 25-75%.
 - **Delete** asks for confirmation.
 
 ## Tech Stack
@@ -154,15 +155,17 @@ lib/
     tools.js              read / create / update / delete note tools
     noteOps.js            Live-editor registry, Markdown <-> HTML, tree outline, 2k-token context
     attachments.js        Image / PDF / CSV processing
+    mentions.js           @tag parsing / highlighting
     exportChat.js         Chat -> Markdown / HTML
   components/
     chat/                 ChatPanel, ChatInput, MessageItem, ImagePreview
     ui/                   shadcn-style button, dialog, dropdown-menu
     Sidebar.jsx           Tree, search, add, drag & drop, delete dialog
+    TabBar.jsx            Tabs of one editor group
     SelectionToolbar.jsx  Floating toolbar on text selection
     RootLayout.jsx        Global keyboard shortcuts
     TiptapEditor.jsx      The editor (+ export, live-editor registration)
-  context/                AppContext (sidebar / chat / panes), ThemeContext
+  context/                AppContext (sidebar, chat, editor groups + tabs), ThemeContext
   db/                     Dexie schema (notes, settings, apiKeys, chats) + noteService
   mcp/                    WebMCP tool definitions
   tiptap/, ui/, utils/    Editor extensions and helpers
