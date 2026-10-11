@@ -58,6 +58,8 @@ import {
 	FileText,
 	ArrowLeft,
 	Copy,
+	Sparkles,
+	ListTree,
 } from "lucide-react";
 import { toast } from "sonner";
 import { debounce } from "lodash";
@@ -71,6 +73,11 @@ const TiptapEditor = ({
 	breadcrumb = [],
 	onNavigateNote,
 	onOpenPage,
+	onEditorReady,
+	onEditorControls,
+	onAICommand,
+	aiOpen = false,
+	onToggleAI,
 }) => {
 	const { isDarkMode } = useTheme();
 	const user = { uid: "local-user" }; // Mock local user
@@ -88,8 +95,14 @@ const TiptapEditor = ({
 	const fileInputRef = useRef(null);
 	const recognitionRef = useRef(null);
 	const onOpenPageRef = useRef(onOpenPage);
+	const onAICommandRef = useRef(onAICommand);
+	const onEditorReadyRef = useRef(onEditorReady);
+	const onEditorControlsRef = useRef(onEditorControls);
 	const initialNoteRef = useRef(initialNote);
 	onOpenPageRef.current = onOpenPage;
+	onAICommandRef.current = onAICommand;
+	onEditorReadyRef.current = onEditorReady;
+	onEditorControlsRef.current = onEditorControls;
 
 	const handleMediaSubmit = () => {
 		if (mediaType === "image") {
@@ -184,6 +197,51 @@ const TiptapEditor = ({
 	const suggestion = {
 		items: ({ query }) => {
 			return [
+				{
+					title: "AI Writer",
+					description: "Open the writing assistant",
+					icon: <Sparkles className="w-4 h-4" />,
+					command: ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						onAICommandRef.current?.("open");
+					},
+				},
+				{
+					title: "Improve",
+					description: "Ask AI to improve this writing",
+					icon: <Sparkles className="w-4 h-4" />,
+					command: ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						onAICommandRef.current?.("improve");
+					},
+				},
+				{
+					title: "Continue",
+					description: "Ask AI to continue writing",
+					icon: <Sparkles className="w-4 h-4" />,
+					command: ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						onAICommandRef.current?.("continue");
+					},
+				},
+				{
+					title: "Summarize",
+					description: "Ask AI for a summary",
+					icon: <FileText className="w-4 h-4" />,
+					command: ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						onAICommandRef.current?.("summarize");
+					},
+				},
+				{
+					title: "Outline",
+					description: "Ask AI for an outline",
+					icon: <ListTree className="w-4 h-4" />,
+					command: ({ editor, range }) => {
+						editor.chain().focus().deleteRange(range).run();
+						onAICommandRef.current?.("outline");
+					},
+				},
 				{
 					title: "Heading 1",
 					description: "Large section heading",
@@ -576,6 +634,25 @@ const TiptapEditor = ({
 		editor.storage.pageInline.onOpenPage = onOpenPage;
 	}, [editor]);
 
+	useEffect(() => {
+		if (!editor) return undefined;
+		onEditorReadyRef.current?.(editor);
+		onEditorControlsRef.current?.({
+			getTitle: () => titleRef.current,
+			setTitle: (value) => {
+				const next = value == null ? "" : String(value);
+				setTitle(next);
+				titleRef.current = next;
+				debouncedUpdate();
+			},
+			saveNow: () => saveNoteImmediately(),
+		});
+		return () => {
+			onEditorReadyRef.current?.(null);
+			onEditorControlsRef.current?.(null);
+		};
+	}, [editor]);
+
 	// Update refs when props change
 	useEffect(() => {
 		// Only update local state if the note ID actually changed
@@ -747,6 +824,19 @@ const TiptapEditor = ({
 					/>
 				</div>
 				<div className="flex items-center gap-3 ml-4 mb-2">
+					<button
+						type="button"
+						onClick={onToggleAI}
+						className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold tracking-wide transition-all ${
+							aiOpen
+								? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+								: "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+						}`}
+						title="AI Writer (⌘K)"
+					>
+						<Sparkles className="w-3.5 h-3.5" />
+						{aiOpen ? "AI Writer" : "AI"}
+					</button>
 					{isSaving && (
 						<div className="flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 text-[10px] font-bold text-zinc-400 animate-pulse">
 							<Loader2 className="w-3 h-3 animate-spin" />

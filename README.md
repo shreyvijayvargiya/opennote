@@ -15,14 +15,15 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
   - **Local Embeddings**: Uses **Transformers.js** to run vector models directly in your browser. **No OpenAI API key required** for the graph visualization!
   - **3D Neural Map**: Explore note connections through a beautiful 3D force graph based on semantic similarity.
 - **Model Context Protocol (MCP)**: Seamlessly connect your local notes to Claude Desktop, allowing AI agents to search and read your private notes without them ever leaving your computer.
-- **Voice-to-Text**: Record notes via the Web Speech API and optionally process them with OpenRouter for clean-up, translation, and structuring.
+- **Voice-to-Text**: Record notes via the Web Speech API.
+- **AI Writer**: A right-side writing assistant that reads the open note and the current selection. Ask it to rewrite, continue, or review, then insert or replace text in the editor. Chats stay in IndexedDB. The OpenRouter key stays on the server.
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- OpenRouter API Key (Optional: only needed for the "Translate & Add" AI voice feature)
+- OpenRouter API Key, stored only in `.env.local` as `OPENROUTER_API_KEY` (see `.env.local.example`)
 
 ### Installation
 

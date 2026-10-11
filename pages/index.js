@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
 	Plus,
 	Search,
@@ -16,6 +16,7 @@ import {
 	Trash,
 	ChevronDown,
 	ChevronRight,
+	Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -24,6 +25,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { noteService } from "../lib/db/noteService";
 import { db as localDb } from "../lib/db/localDb";
 import TiptapEditor from "../lib/components/TiptapEditor";
+import AIWriterPanel from "../lib/components/AIWriterPanel";
 import { useTheme } from "../lib/context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
@@ -165,6 +167,11 @@ const IndexPage = () => {
 
 	const [mcpStatus, setMcpStatus] = useState({ connected: false });
 	const [isFetchingMcpStatus, setIsFetchingMcpStatus] = useState(false);
+	const [editorInstance, setEditorInstance] = useState(null);
+	const [aiOpen, setAiOpen] = useState(false);
+	const [aiFocusTick, setAiFocusTick] = useState(0);
+	const [aiRequest, setAiRequest] = useState(null);
+	const editorControlsRef = useRef(null);
 
 	const router = useRouter();
 
@@ -197,6 +204,17 @@ const IndexPage = () => {
 	};
 
 	useEffect(() => {
+		if (window.matchMedia("(min-width: 768px)").matches) {
+			setAiOpen(true);
+		}
+		const onKeyDown = (event) => {
+			if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+				event.preventDefault();
+				setAiOpen(true);
+				setAiFocusTick((value) => value + 1);
+			}
+		};
+		window.addEventListener("keydown", onKeyDown);
 		fetchMcpStatus();
 		fetchSystemInfo();
 		const interval = setInterval(fetchMcpStatus, 10000); // Check every 10s
@@ -210,7 +228,10 @@ const IndexPage = () => {
 		};
 		setUser(newUser);
 
-		return () => clearInterval(interval);
+		return () => {
+			clearInterval(interval);
+			window.removeEventListener("keydown", onKeyDown);
+		};
 	}, []);
 
 	// WebMCP Integration
@@ -250,8 +271,18 @@ const IndexPage = () => {
 	}, [user]);
 
 	// Fetch Notes Locally with useLiveQuery for real-time updates
-	const notes =
-		useLiveQuery(() => noteService.getAllNotes(user?.uid), [user?.uid]) || [];
+	const notesQuery = useLiveQuery(
+		() => noteService.getAllNotes(user?.uid),
+		[user?.uid],
+	);
+	const notes = notesQuery || [];
+
+	useEffect(() => {
+		if (!notesQuery || activeNoteId == null) return;
+		if (!notesQuery.some((note) => note.id === activeNoteId)) {
+			setActiveNoteId(null);
+		}
+	}, [notesQuery, activeNoteId]);
 
 	// Filter Notes
 	const childrenByParent = useMemo(() => {
@@ -457,9 +488,9 @@ const IndexPage = () => {
 
 				{/* Sidebar */}
 				<aside
-					className={`fixed inset-y-0 left-0 z-50 w-72 border-r border-zinc-100 dark:border-zinc-900 flex flex-col bg-zinc-50/50 dark:bg-zinc-950 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) md:relative ${
-						isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-					} ${isSidebarCollapsed ? "md:-ml-72" : "md:ml-0"}`}
+					className={`fixed z-50 top-2 bottom-2 left-2 w-[min(18rem,calc(100%-1rem))] rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col overflow-hidden bg-zinc-50 dark:bg-zinc-950 transition-transform duration-300 md:static md:z-auto md:my-2 md:ml-2 md:h-[calc(100%-1rem)] md:w-72 md:shrink-0 ${
+						isSidebarOpen ? "translate-x-0" : "-translate-x-[120%] md:translate-x-0"
+					} ${isSidebarCollapsed ? "md:hidden" : ""}`}
 				>
 					<div className="p-5 flex flex-col h-full">
 						<div className="flex items-center justify-between mb-6">
@@ -597,12 +628,24 @@ const IndexPage = () => {
 						<h1 className="text-xs font-black tracking-[0.2em] uppercase">
 							OpenNote
 						</h1>
-						<button
-							onClick={handleCreateNote}
-							className="p-3 rounded-2xl bg-zinc-600 text-white shadow-lg shadow-zinc-500/20"
-						>
-							<Plus className="w-5 h-5" />
-						</button>
+						<div className="flex items-center gap-2">
+							<button
+								onClick={() => {
+									setAiOpen(true);
+									setAiFocusTick((value) => value + 1);
+								}}
+								className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 text-zinc-500"
+								title="AI Writer"
+							>
+								<Sparkles className="w-5 h-5" />
+							</button>
+							<button
+								onClick={handleCreateNote}
+								className="p-3 rounded-2xl bg-zinc-600 text-white shadow-lg shadow-zinc-500/20"
+							>
+								<Plus className="w-5 h-5" />
+							</button>
+						</div>
 					</header>
 
 					<div className="flex-1 h-full overflow-hidden flex flex-col">
@@ -620,7 +663,24 @@ const IndexPage = () => {
 									breadcrumb={breadcrumb}
 									onNavigateNote={handleSelectNote}
 									onOpenPage={handleSelectNote}
-									onUpdate={(updatedNote) => {
+									onEditorReady={setEditorInstance}
+									onEditorControls={(controls) => {
+										editorControlsRef.current = controls;
+									}}
+									aiOpen={aiOpen}
+									onToggleAI={() => {
+										setAiOpen((open) => !open);
+										setAiFocusTick((value) => value + 1);
+									}}
+									onAICommand={(action) => {
+										setAiOpen(true);
+										setAiFocusTick((value) => value + 1);
+										setAiRequest({
+											id: `${Date.now()}-${action}`,
+											action,
+										});
+									}}
+									onUpdate={() => {
 										// Local state is updated via useLiveQuery automatically
 									}}
 								/>
@@ -654,6 +714,17 @@ const IndexPage = () => {
 						)}
 					</div>
 				</main>
+				{aiOpen && (
+					<AIWriterPanel
+						editor={editorInstance}
+						editorControlsRef={editorControlsRef}
+						activeNote={activeNote}
+						onClose={() => setAiOpen(false)}
+						pendingRequest={aiRequest}
+						focusTick={aiFocusTick}
+						onActiveDeleted={() => setActiveNoteId(null)}
+					/>
+				)}
 			</div>
 
 			{/* MCP Config Modal */}
