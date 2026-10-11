@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import Markdown from "./Markdown";
 import {
 	Check,
 	Copy,
@@ -63,6 +63,46 @@ const ChangeCard = ({ change, onKeep, onUndo }) => {
 	);
 };
 
+const URL_RE = /(https?:\/\/[^\s<>"')]+[^\s<>"').,;:!?])/g;
+
+/** User text: tagged notes become short clickable chips, URLs become links. */
+const UserText = ({ message, onOpenNote }) => {
+	const tags = (message.contexts || [])
+		.filter((c) => c.kind === "note")
+		.map((c) => ({ id: c.noteId, title: c.title }));
+	return splitTags(message.content, tags).map((part, i) =>
+		part.id != null ? (
+			<button
+				key={i}
+				type="button"
+				title={part.text.slice(1)}
+				onClick={() => onOpenNote?.(part.id)}
+				className={cn(TAG_CLASS, "inline-block max-w-[220px] cursor-pointer truncate px-1 align-bottom hover:opacity-80")}
+			>
+				{part.text}
+			</button>
+		) : (
+			<React.Fragment key={i}>
+				{part.text.split(URL_RE).map((chunk, k) =>
+					k % 2 ? (
+						<a
+							key={k}
+							href={chunk}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="break-all text-indigo-600 underline decoration-indigo-300 underline-offset-2 dark:text-indigo-300"
+						>
+							{chunk}
+						</a>
+					) : (
+						chunk
+					),
+				)}
+			</React.Fragment>
+		),
+	);
+};
+
 const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview, onOpenNote }) => {
 	const isUser = message.role === "user";
 	const copy = async () => {
@@ -109,30 +149,9 @@ const MessageItem = ({ message, streaming, onKeep, onUndo, onPreview, onOpenNote
 					)}
 				>
 					{isUser ? (
-						splitTags(
-							message.content,
-							(message.contexts || [])
-								.filter((c) => c.kind === "note")
-								.map((c) => ({ id: c.noteId, title: c.title })),
-						).map((part, i) =>
-							part.id != null ? (
-								<button
-									key={i}
-									type="button"
-									title="Open note"
-									onClick={() => onOpenNote?.(part.id)}
-									className={cn(TAG_CLASS, "cursor-pointer hover:opacity-80")}
-								>
-									{part.text}
-								</button>
-							) : (
-								<React.Fragment key={i}>{part.text}</React.Fragment>
-							),
-						)
+						<UserText message={message} onOpenNote={onOpenNote} />
 					) : message.content ? (
-						<div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1.5 prose-pre:my-2 prose-ul:my-1.5 prose-headings:my-2">
-							<ReactMarkdown>{message.content}</ReactMarkdown>
-						</div>
+						<Markdown onOpenNote={onOpenNote}>{message.content}</Markdown>
 					) : (
 						<span className="inline-flex gap-1 py-1">
 							{[0, 1, 2].map((i) => (

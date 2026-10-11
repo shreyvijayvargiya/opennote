@@ -54,7 +54,7 @@ const SlashCommandList = forwardRef((props, ref) => {
 	}));
 
 	return (
-		<div className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-1 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+		<div className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto hide-scrollbar rounded-xl border border-zinc-200 bg-white p-1 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
 			{props.items.length ? (
 				props.items.map((item, index) => (
 					<button

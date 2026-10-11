@@ -298,7 +298,7 @@ const TableComponent = ({
 						</button>
 						{isDropdownOpen && (
 							<div
-								className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg min-w-[200px] p-2 max-h-[400px] overflow-y-auto"
+								className="absolute top-full right-0 mt-1 bg-white border border-zinc-200 rounded-xl shadow-lg min-w-[200px] p-2 max-h-[400px] overflow-y-auto hide-scrollbar"
 								style={{ zIndex: 1002 }}
 								onClick={(e) => e.stopPropagation()}
 							>
@@ -419,7 +419,7 @@ const TableComponent = ({
 					</div>
 
 				{/* Table */}
-				<div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+				<div className="overflow-x-auto hide-scrollbar rounded-xl border border-zinc-200 dark:border-zinc-800">
 					<table className="w-full border-collapse">
 						{hasHeader && currentRows.length > 0 && (
 							<thead>

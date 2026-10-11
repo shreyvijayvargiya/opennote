@@ -165,7 +165,7 @@ const CodeBlockComponent = ({ node, updateAttributes, getPos, editor }) => {
 										initial={{ opacity: 0, y: -10 }}
 										animate={{ opacity: 1, y: 0 }}
 										exit={{ opacity: 0, y: -10 }}
-										className="absolute top-full right-0 mb-1 bg-white border border-zinc-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto min-w-[150px]"
+										className="absolute top-full right-0 mb-1 bg-white border border-zinc-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto hide-scrollbar min-w-[150px]"
 									>
 										{LANGUAGES.map((lang) => (
 											<button
@@ -290,7 +290,7 @@ const CodeBlockItem = ({
 									initial={{ opacity: 0, y: -10 }}
 									animate={{ opacity: 1, y: 0 }}
 									exit={{ opacity: 0, y: -10 }}
-									className="absolute top-full right-0 mb-1 bg-white border border-zinc-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto min-w-[150px]"
+									className="absolute top-full right-0 mb-1 bg-white border border-zinc-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto hide-scrollbar min-w-[150px]"
 								>
 									{LANGUAGES.map((lang) => (
 										<button
@@ -483,7 +483,7 @@ const CodeGroupComponent = ({
 			<div className="rounded-xl bg-zinc-100 border border-zinc-200 overflow-hidden">
 				{/* Tabs Header */}
 				<div className="flex items-center justify-between px-3 pt-2 bg-transparent border-b border-zinc-200">
-					<div className="flex items-center gap-0.5 overflow-x-auto flex-1">
+					<div className="flex items-center gap-0.5 overflow-x-auto hide-scrollbar flex-1">
 						{tabs.map((tab, index) => (
 							<div
 								key={tab.id}

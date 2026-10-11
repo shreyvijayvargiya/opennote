@@ -18,7 +18,7 @@ It combines rich-text editing (Tiptap), high-performance local storage (IndexedD
 - **Voice-to-Text**: Record notes via the Web Speech API and optionally process them with OpenRouter for clean-up, translation, and structuring.
 - **AI Assistant (right panel)**: A Claude-style chat that reads and edits your notes. Bring your own [OpenRouter](https://openrouter.ai) key and pick any model from the input. See [AI Assistant](#ai-assistant).
 - **Tabs + split view**: every open note gets a tab above the breadcrumbs. Split into up to 2 tab groups side by side (split icon next to download, or the split icon on a sidebar row). Drag the divider to resize (25-75%); it highlights on hover.
-- **Sidebar**: nested notes and folders, drag & drop to move notes, create inside the active note, confirm-before-delete.
+- **Sidebar**: nested notes and folders, drag & drop to move notes, create inside the active note, confirm-before-delete, and a custom **icon / emoji** per note or folder.
 - **Selection toolbar**: select text for Bold, Italic, Link, List, Heading, Copy and **Ask AI**.
 - **Export**: download any note as Markdown (`.md`) or HTML (`.html`) next to the copy button.
 
@@ -83,6 +83,7 @@ Open it with **⌘/Ctrl + L** (or the *Ask AI* button), then add your OpenRouter
 | **History** | Clock icon: up to **10** chats × **50** messages are kept in IndexedDB (oldest pruned). Delete one or all. |
 | **Image preview** | Click any image (in the input or a message) to open it full size. Right-click, or use `⌘/Ctrl+C` (copy) / `⌘/Ctrl+S` (download) / `Esc` (close). These keys are only active while the preview is open. |
 | **Export chat** | Download icon in the chat header: Markdown or HTML. |
+| **Markdown** | Replies render GitHub-flavoured Markdown: clickable links, tables, task lists, copyable code blocks. `[Title](page://id)` links open that note. Long tagged-note names are truncated in sent messages. |
 | **Copy & time** | Every message has a timestamp and a copy button. |
 
 **The AI reads the live editor, not the database.** Open notes are read from (and written to) the Tiptap editor, so unsaved typing is included. Only notes that are not open fall back to IndexedDB. The system prompt contains the folder/page tree (with ids) so the model understands your structure, and nested pages show up as `[Title](page://id)` links.
@@ -114,6 +115,7 @@ Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hot
 - **Drag & drop** ([dnd-kit](https://dndkit.com)): drop a note on another to nest it; drop it on the "Move to top level" strip to un-nest.
 - **Tabs**: opening a note adds a tab (up to 10 per group). Middle-click or `x` closes it; `+` creates a note.
 - **Split view** (max 2 groups): use the split icon in the editor header (pick or create a note to open beside) or the split icon on a sidebar row. Each group has its own tabs. Drag the divider to resize; widths are limited to 25-75%.
+- **Icons**: click the icon in front of a sidebar row to pick one of ~115 [Hugeicons](https://hugeicons.com) or ~60 emoji (searchable). It's stored on the note in IndexedDB as a string (`hugeicons:Rocket01Icon` or `emoji:🔥`). Tabs show the same icon but can't change it. Add more icons in `lib/icons.js`.
 - **Delete** asks for confirmation.
 
 ## Tech Stack
@@ -136,7 +138,9 @@ Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hot
 | `react-hotkeys-hook` | global shortcuts (⌘L, ⌘B) |
 | `@dnd-kit/core` | sidebar drag & drop |
 | `react-resizable-panels` | split view with resizable width |
-| `react-markdown` | rendering assistant replies |
+| `react-markdown`, `remark-gfm` | rendering assistant replies (tables, task lists, links) |
+| `@hugeicons/react`, `@hugeicons/core-free-icons` | note / folder / tab icons |
+| `@radix-ui/react-popover` | the icon picker |
 | `textarea-caret` | positioning the `@` dropdown at the cursor |
 | `@tiptap/extension-bubble-menu`, `@tiptap/extension-bold` | selection toolbar, freeing ⌘B |
 
@@ -158,14 +162,17 @@ lib/
     mentions.js           @tag parsing / highlighting
     exportChat.js         Chat -> Markdown / HTML
   components/
-    chat/                 ChatPanel, ChatInput, MessageItem, ImagePreview
+    chat/                 ChatPanel, ChatInput, MessageItem, Markdown, ImagePreview
     ui/                   shadcn-style button, dialog, dropdown-menu
     Sidebar.jsx           Tree, search, add, drag & drop, delete dialog
-    TabBar.jsx            Tabs of one editor group
+    TabBar.jsx            Tabs of one editor group (rounded pills)
+    NoteIcon.jsx          Renders a note's Hugeicon / emoji
+    IconPicker.jsx        Searchable icon + emoji popover
     SelectionToolbar.jsx  Floating toolbar on text selection
     RootLayout.jsx        Global keyboard shortcuts
     TiptapEditor.jsx      The editor (+ export, live-editor registration)
   context/                AppContext (sidebar, chat, editor groups + tabs), ThemeContext
+  icons.js                Icon + emoji catalog and the stored-string format
   db/                     Dexie schema (notes, settings, apiKeys, chats) + noteService
   mcp/                    WebMCP tool definitions
   tiptap/, ui/, utils/    Editor extensions and helpers
@@ -175,3 +182,9 @@ mcp-server/               stdio bridge for Claude Desktop
 ## License
 
 MIT
+
+## Styling notes
+
+- Layout: floating rounded sidebar, one rounded-xl card per editor group, floating rounded assistant card.
+- Buttons are light-theme (`bg-zinc-100`, bordered) everywhere; there are no dark filled CTAs in light mode.
+- Scrollbars are hidden on every `overflow-y-auto` / `overflow-x-auto` / `overflow-auto` container via the root rule in `styles/globals.css` (and the `.hide-scrollbar` class for anything else).

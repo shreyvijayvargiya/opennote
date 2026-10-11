@@ -31,6 +31,8 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import NoteIcon from "./NoteIcon";
+import IconPicker from "./IconPicker";
 import {
 	Dialog,
 	DialogContent,
@@ -92,6 +94,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 	onSelect,
 	onSplit,
 	onDelete,
+	onIconChange,
 	expandedFor,
 }) {
 	const drag = useDraggable({ id: note.id });
@@ -103,7 +106,6 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 	const expanded = expandedFor(note.id) || Boolean(searchQuery);
 	const isActive = activeId === note.id;
 	const isOpen = openIds.includes(note.id);
-	const Icon = note.isFolder ? Folder : FileText;
 
 	return (
 		<div>
@@ -140,12 +142,21 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 				) : (
 					<span className="ml-1 w-4 flex-shrink-0" />
 				)}
+				<IconPicker note={note} onChange={(value) => onIconChange(note, value)}>
+					<button
+						type="button"
+						title="Change icon"
+						onClick={(e) => e.stopPropagation()}
+						className="ml-0.5 flex-shrink-0 rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+					>
+						<NoteIcon note={note} size={14} />
+					</button>
+				</IconPicker>
 				<button
 					type="button"
 					onClick={() => onSelect(note.id)}
-					className="flex min-w-0 flex-1 items-center gap-1.5 p-2.5 pr-20 text-left"
+					className="flex min-w-0 flex-1 items-center gap-1.5 py-2.5 pl-1 pr-20 text-left"
 				>
-					<Icon className="h-3 w-3 flex-shrink-0 text-zinc-400" />
 					<span
 						className={cn(
 							"block truncate text-[11px] font-bold",
@@ -198,6 +209,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 							onSelect={onSelect}
 							onSplit={onSplit}
 							onDelete={onDelete}
+							onIconChange={onIconChange}
 							expandedFor={expandedFor}
 						/>
 					))}
@@ -322,6 +334,12 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 			toast.error("Failed to create");
 		}
 	};
+
+	/* ---- icon / emoji (stored on the note in IndexedDB; no reorder, so updatedAt is untouched) ---- */
+	const changeIcon = useCallback(
+		(note, value) => localDb.notes.update(note.id, { icon: value || undefined }),
+		[],
+	);
 
 	/* ---- delete (always behind a confirmation dialog) ---- */
 	const confirmDelete = async () => {
@@ -449,7 +467,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 								<RootDropZone />
 							</div>
 						)}
-						<div className="scrollbar-hide -mx-1 flex-1 space-y-0.5 overflow-y-auto px-1 pb-12">
+						<div className="hide-scrollbar -mx-1 flex-1 space-y-0.5 overflow-y-auto hide-scrollbar px-1 pb-12">
 							{filteredRoots.length > 0 ? (
 								filteredRoots.map((note) => (
 									<NoteTreeItem
@@ -464,6 +482,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 										onSelect={handleSelect}
 										onSplit={app.openSplit}
 										onDelete={setPendingDelete}
+										onIconChange={changeIcon}
 										expandedFor={expandedFor}
 									/>
 								))

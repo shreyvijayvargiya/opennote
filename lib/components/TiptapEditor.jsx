@@ -861,7 +861,7 @@ const TiptapEditor = ({
 								<Plus /> New note
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<div className="max-h-56 overflow-y-auto">
+							<div className="max-h-56 overflow-y-auto hide-scrollbar">
 								{splitCandidates.length === 0 && (
 									<div className="px-2.5 py-2 text-xs text-muted-foreground">No other notes</div>
 								)}
@@ -895,7 +895,7 @@ const TiptapEditor = ({
 			{/* Toolbar - Floating & Minimal */}
 			<div className="max-w-4xl mx-auto w-full px-8 mb-4">
 				<div
-					className={`py-1.5 px-2 border ${isDarkMode ? "border-zinc-800 bg-zinc-900/50" : "border-zinc-200 bg-white/50"} backdrop-blur-md rounded-2xl flex items-center gap-0.5 overflow-x-auto scrollbar-hide sticky top-0 z-10 `}
+					className={`py-1.5 px-2 border ${isDarkMode ? "border-zinc-800 bg-zinc-900/50" : "border-zinc-200 bg-white/50"} backdrop-blur-md rounded-2xl flex items-center gap-0.5 overflow-x-auto hide-scrollbar sticky top-0 z-10 `}
 				>
 					<ToolbarButton
 						active={false}
@@ -1013,7 +1013,7 @@ const TiptapEditor = ({
 			</div>
 
 			{/* Editor Content */}
-			<div className="flex-1 overflow-y-auto scrollbar-hide">
+			<div className="flex-1 overflow-y-auto hide-scrollbar">
 				<div
 					className={`px-8 pb-32 prose ${isDarkMode ? "prose-invert prose-zinc" : "prose-zinc"} max-w-4xl mx-auto w-full prose-p:my-1 prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:underline decoration-indigo-400/30 underline-offset-4 hover:prose-a:text-indigo-700 dark:hover:prose-a:text-indigo-300`}
 				>
@@ -1074,7 +1074,7 @@ const TiptapEditor = ({
 						</div>
 
 						<div
-							className={`max-h-32 overflow-y-auto text-sm ${isDarkMode ? "text-zinc-300 bg-zinc-800" : "text-zinc-600 bg-zinc-50"} p-4 rounded-2xl italic`}
+							className={`max-h-32 overflow-y-auto hide-scrollbar text-sm ${isDarkMode ? "text-zinc-300 bg-zinc-800" : "text-zinc-600 bg-zinc-50"} p-4 rounded-2xl italic`}
 						>
 							{spokenText || (isRecording ? "Say something..." : "")}
 						</div>
@@ -1101,7 +1101,7 @@ const TiptapEditor = ({
 									<button
 										onClick={handleTranslateAndInsert}
 										disabled={isProcessing}
-										className={`px-5 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "bg-zinc-900 text-white hover:bg-zinc-800"} text-sm font-medium transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50`}
+										className={`px-5 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "border border-zinc-200 bg-zinc-100 text-zinc-800 hover:bg-zinc-200"} text-sm font-medium transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50`}
 									>
 										{isProcessing ? (
 											<Loader2 className="w-4 h-4 animate-spin" />
@@ -1225,7 +1225,7 @@ const TiptapEditor = ({
 								</button>
 								<button
 									onClick={handleMediaSubmit}
-									className={`px-6 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "bg-zinc-900 text-white hover:bg-zinc-800"} text-sm font-medium transition-colors`}
+									className={`px-6 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "border border-zinc-200 bg-zinc-100 text-zinc-800 hover:bg-zinc-200"} text-sm font-medium transition-colors`}
 								>
 									Insert {mediaType}
 								</button>
@@ -1275,7 +1275,7 @@ const TiptapEditor = ({
 								</button>
 								<button
 									onClick={handleLinkSubmit}
-									className={`px-6 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "bg-zinc-900 text-white hover:bg-zinc-800"} text-sm font-medium transition-colors`}
+									className={`px-6 py-2 rounded-xl ${isDarkMode ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200" : "border border-zinc-200 bg-zinc-100 text-zinc-800 hover:bg-zinc-200"} text-sm font-medium transition-colors`}
 								>
 									{editor.isActive("link") ? "Update" : "Set Link"}
 								</button>

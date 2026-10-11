@@ -30,7 +30,7 @@ const CloseDot = ({ onClick }) => (
 	<button
 		type="button"
 		onClick={onClick}
-		className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-500 text-white shadow-sm transition-colors hover:bg-zinc-600"
+		className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-zinc-300 bg-zinc-100 text-zinc-600 shadow-sm transition-colors hover:bg-zinc-200 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-200"
 	>
 		<X className="h-2.5 w-2.5" />
 	</button>
@@ -314,7 +314,7 @@ const ChatInput = ({
 					}}
 					onPaste={onPaste}
 					style={{ scrollbarWidth: "none" }}
-					className="relative block max-h-[200px] w-full resize-none bg-transparent px-2 py-1.5 text-sm text-transparent caret-zinc-800 outline-none placeholder:text-muted-foreground dark:caret-zinc-100 [&::-webkit-scrollbar]:hidden"
+					className="hide-scrollbar relative block max-h-[200px] w-full resize-none bg-transparent px-2 py-1.5 text-sm text-transparent caret-zinc-800 outline-none placeholder:text-muted-foreground dark:caret-zinc-100 [&::-webkit-scrollbar]:hidden"
 				/>
 
 				{mention && (

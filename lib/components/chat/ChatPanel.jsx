@@ -134,7 +134,7 @@ const ChatPanel = ({ notes }) => {
 							{chat.history.length === 0 && (
 								<div className="px-2.5 py-3 text-xs text-muted-foreground">No chats yet</div>
 							)}
-							<div className="max-h-64 overflow-y-auto">
+							<div className="max-h-64 overflow-y-auto hide-scrollbar">
 								{chat.history.map((c) => (
 									<DropdownMenuItem
 										key={c.id}
@@ -191,7 +191,7 @@ const ChatPanel = ({ notes }) => {
 				</div>
 
 				{/* Messages */}
-				<div className="flex-1 overflow-y-auto px-4 py-4">
+				<div className="flex-1 overflow-y-auto hide-scrollbar px-4 py-4">
 					{!chat.apiKey ? (
 						<div className="mx-auto mt-8 max-w-xs space-y-3">
 							<h3 className="text-sm font-semibold">Connect OpenRouter</h3>
