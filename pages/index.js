@@ -21,6 +21,7 @@ import ChatPanel from "../lib/components/chat/ChatPanel";
 import TabBar from "../lib/components/TabBar";
 import { useTheme } from "../lib/context/ThemeContext";
 import { useApp } from "../lib/context/AppContext";
+import ThemesPage from "../lib/components/ThemesPage";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 import { getNotesTools } from "../lib/mcp/notesTools";
@@ -245,7 +246,9 @@ const IndexPage = () => {
 						</header>
 
 						<div className="flex-1 min-h-0 overflow-hidden flex flex-col px-2 py-2">
-							{viewGroups.length > 0 ? (
+							{app.themesOpen ? (
+								<ThemesPage />
+							) : viewGroups.length > 0 ? (
 								<PanelGroup direction="horizontal" className="h-full">
 									{viewGroups.map((group, i) => {
 										const note = byId.get(group.active);

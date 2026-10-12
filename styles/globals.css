@@ -7,7 +7,8 @@
  * <html data-theme="...">. Every value is a complete CSS color (hex, hsl or oklch all work),
  * so a tweakcn theme can be pasted in as is.
  */
-:root {
+:root,
+[data-theme="default"] {
 	--radius: 0.75rem;
 
 	/* shadcn/ui tokens */
@@ -39,7 +40,8 @@
 	--indigo-500: #6366f1; --indigo-600: #4f46e5; --indigo-700: #4338ca; --indigo-800: #3730a3; --indigo-900: #312e81; --indigo-950: #1e1b4b;
 }
 
-.dark {
+.dark,
+[data-theme="default"].dark {
 	--background: hsl(240 10% 3.9%);
 	--foreground: hsl(0 0% 98%);
 	--card: hsl(240 10% 3.9%);

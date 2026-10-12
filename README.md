@@ -99,7 +99,7 @@ Tune the limits in one place, `lib/ai/useChat.js`: `MAX_CHATS`, `MAX_MESSAGES`, 
 
 ## Color Themes
 
-Click the palette icon in the sidebar header to pick one of 10 themes (each has light and dark). The choice is saved in `localStorage` (`opennote-theme`) — no database — and applied before first paint, so there is no flash.
+Click the palette icon in the sidebar header to open the Themes page in the centre content: 10 live-preview cards (each has light and dark); click one to apply it to the whole app. The choice is saved in `localStorage` (`opennote-theme`) — no database — and applied before first paint, so there is no flash.
 
 How it works: shadcn tokens (`--background`, `--primary`, …) plus a small "bridge" in `tailwind.config.js` that maps Tailwind `zinc`/`white`/`indigo` to theme variables. A theme is just a `[data-theme="id"]` block in `styles/themes.css`.
 
