@@ -2,76 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * Default theme (OpenNote). Other themes live in styles/themes.css and are switched with
- * <html data-theme="...">. Every value is a complete CSS color (hex, hsl or oklch all work),
- * so a tweakcn theme can be pasted in as is.
- */
-:root,
-[data-theme="default"] {
-	--radius: 0.75rem;
-
-	/* shadcn/ui tokens */
-	--background: hsl(0 0% 100%);
-	--foreground: hsl(240 10% 3.9%);
-	--card: hsl(0 0% 100%);
-	--card-foreground: hsl(240 10% 3.9%);
-	--popover: hsl(0 0% 100%);
-	--popover-foreground: hsl(240 10% 3.9%);
-	--primary: #6366f1;
-	--primary-foreground: #ffffff;
-	--secondary: hsl(240 4.8% 95.9%);
-	--secondary-foreground: hsl(240 5.9% 10%);
-	--muted: hsl(240 4.8% 95.9%);
-	--muted-foreground: hsl(240 3.8% 46.1%);
-	--accent: hsl(240 4.8% 95.9%);
-	--accent-foreground: hsl(240 5.9% 10%);
-	--destructive: hsl(0 72% 51%);
-	--destructive-foreground: hsl(0 0% 98%);
-	--border: hsl(240 5.9% 90%);
-	--input: hsl(240 5.9% 90%);
-	--ring: hsl(240 5% 64.9%);
-
-	/* the palettes the app's classes use (Tailwind zinc + indigo + white) */
-	--white: #ffffff;
-	--zinc-50: #fafafa; --zinc-100: #f4f4f5; --zinc-200: #e4e4e7; --zinc-300: #d4d4d8; --zinc-400: #a1a1aa;
-	--zinc-500: #71717a; --zinc-600: #52525b; --zinc-700: #3f3f46; --zinc-800: #27272a; --zinc-900: #18181b; --zinc-950: #09090b;
-	--indigo-50: #eef2ff; --indigo-100: #e0e7ff; --indigo-200: #c7d2fe; --indigo-300: #a5b4fc; --indigo-400: #818cf8;
-	--indigo-500: #6366f1; --indigo-600: #4f46e5; --indigo-700: #4338ca; --indigo-800: #3730a3; --indigo-900: #312e81; --indigo-950: #1e1b4b;
-}
-
-.dark,
-[data-theme="default"].dark {
-	--background: hsl(240 10% 3.9%);
-	--foreground: hsl(0 0% 98%);
-	--card: hsl(240 10% 3.9%);
-	--card-foreground: hsl(0 0% 98%);
-	--popover: hsl(240 6% 8%);
-	--popover-foreground: hsl(0 0% 98%);
-	--secondary: hsl(240 3.7% 15.9%);
-	--secondary-foreground: hsl(0 0% 98%);
-	--muted: hsl(240 3.7% 15.9%);
-	--muted-foreground: hsl(240 5% 64.9%);
-	--accent: hsl(240 3.7% 15.9%);
-	--accent-foreground: hsl(0 0% 98%);
-	--destructive: hsl(0 62.8% 45%);
-	--destructive-foreground: hsl(0 0% 98%);
-	--border: hsl(240 3.7% 18%);
-	--input: hsl(240 3.7% 18%);
-	--ring: hsl(240 4.9% 83.9%);
-}
-
 .ProseMirror {
 	outline: none !important;
 	color: inherit;
 }
 
 .dark .ProseMirror {
-	color: var(--zinc-200);
+	color: rgb(var(--zinc-200));
 }
 .ProseMirror p:first-child:empty::before {
 	content: "Start writing... Type / for commands";
-	color: var(--zinc-400);
+	color: rgb(var(--zinc-400));
 	pointer-events: none;
 	position: absolute;
 	top: 0;
@@ -80,10 +21,10 @@
 }
 
 .dark .ProseMirror p:first-child:empty::before {
-	color: var(--zinc-700);
+	color: rgb(var(--zinc-700));
 }
 .ProseMirror code {
-	background-color: var(--zinc-100);
+	background-color: rgb(var(--zinc-100));
 	color: #dc2626;
 	margin: 0 0.25em;
 	padding: 0.2em;
@@ -91,7 +32,7 @@
 }
 
 .dark .ProseMirror code {
-	background-color: var(--zinc-800);
+	background-color: rgb(var(--zinc-800));
 	color: #f87171;
 }
 .ProseMirror p {
@@ -101,23 +42,23 @@
 .ProseMirror h1 {
 	font-size: 1.5em !important;
 	font-weight: 700 !important;
-	color: var(--zinc-900) !important;
+	color: rgb(var(--zinc-900)) !important;
 	padding: 0.5em 0;
 }
 
 .dark .ProseMirror h1 {
-	color: var(--zinc-100) !important;
+	color: rgb(var(--zinc-100)) !important;
 }
 
 .ProseMirror h2 {
 	font-size: 1.2em !important;
 	font-weight: 600 !important;
-	color: var(--zinc-800) !important;
+	color: rgb(var(--zinc-800)) !important;
 	padding: 0.5em 0;
 }
 
 .dark .ProseMirror h2 {
-	color: var(--zinc-200) !important;
+	color: rgb(var(--zinc-200)) !important;
 }
 .ProseMirror ul,
 .ProseMirror ol {
@@ -175,11 +116,11 @@
 	margin: 1em 0 !important;
 }
 .ProseMirror a {
-	color: var(--indigo-500) !important;
+	color: rgb(var(--indigo-500)) !important;
 	text-decoration: underline !important;
 }
 .ProseMirror a:hover {
-	color: var(--indigo-700) !important;
+	color: rgb(var(--indigo-700)) !important;
 }
 .ProseMirror strong {
 	font-weight: 600 !important;
@@ -194,12 +135,12 @@
 .ProseMirror .tableWrapper {
 	border-radius: var(--radius);
 	overflow: hidden;
-	border: 1px solid var(--zinc-200);
+	border: 1px solid rgb(var(--zinc-200));
 	margin: 1em 0;
 }
 
 .dark .ProseMirror .tableWrapper {
-	border-color: var(--zinc-800);
+	border-color: rgb(var(--zinc-800));
 }
 
 .ProseMirror table {
@@ -209,18 +150,18 @@
 	table-layout: fixed;
 	width: 100%;
 	overflow: hidden;
-	border: 1px solid var(--zinc-200);
+	border: 1px solid rgb(var(--zinc-200));
 	border-radius: var(--radius);
 }
 
 .dark .ProseMirror table {
-	border-color: var(--zinc-800);
+	border-color: rgb(var(--zinc-800));
 }
 
 .ProseMirror table td,
 .ProseMirror table th {
 	min-width: 1em;
-	border: 1px solid var(--zinc-200);
+	border: 1px solid rgb(var(--zinc-200));
 	padding: 8px 12px;
 	vertical-align: top;
 	box-sizing: border-box;
@@ -229,18 +170,18 @@
 
 .dark .ProseMirror table td,
 .dark .ProseMirror table th {
-	border-color: var(--zinc-800);
+	border-color: rgb(var(--zinc-800));
 }
 
 .dark .ProseMirror table td {
-	background-color: var(--zinc-950);
+	background-color: rgb(var(--zinc-950));
 }
 
 .ProseMirror table th {
 	font-weight: 600;
 	text-align: left;
-	background-color: var(--zinc-100);
-	color: var(--zinc-900);
+	background-color: rgb(var(--zinc-100));
+	color: rgb(var(--zinc-900));
 }
 
 .ProseMirror table tr:first-child th:first-child,
@@ -259,8 +200,8 @@
 }
 
 .dark .ProseMirror table th {
-	background-color: var(--zinc-900);
-	color: var(--zinc-100);
+	background-color: rgb(var(--zinc-900));
+	color: rgb(var(--zinc-100));
 }
 
 .ProseMirror table .selectedCell:after {
@@ -281,7 +222,7 @@
 	top: 0;
 	bottom: -2px;
 	width: 4px;
-	background-color: var(--indigo-500);
+	background-color: rgb(var(--indigo-500));
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 0.2s;
@@ -297,16 +238,16 @@
 }
 
 .ProseMirror blockquote {
-	border-left: 4px solid var(--zinc-200);
+	border-left: 4px solid rgb(var(--zinc-200));
 	padding-left: 1em;
 	margin: 1em 0;
 	font-style: italic;
-	color: var(--zinc-500);
+	color: rgb(var(--zinc-500));
 }
 
 .dark .ProseMirror blockquote {
-	border-left-color: var(--zinc-700);
-	color: var(--zinc-400);
+	border-left-color: rgb(var(--zinc-700));
+	color: rgb(var(--zinc-400));
 }
 
 .ProseMirror s {
@@ -336,7 +277,7 @@
 }
 
 .dark .ProseMirror ul[data-type="taskList"] li {
-	color: var(--zinc-200);
+	color: rgb(var(--zinc-200));
 }
 
 .ProseMirror ul[data-type="taskList"] li > label {
@@ -350,7 +291,7 @@
 	width: 1.1em;
 	height: 1.1em;
 	border-radius: 4px;
-	border: 2px solid var(--zinc-300);
+	border: 2px solid rgb(var(--zinc-300));
 	appearance: none;
 	display: flex;
 	align-items: center;
@@ -360,8 +301,8 @@
 }
 
 .dark .ProseMirror ul[data-type="taskList"] li > label input[type="checkbox"] {
-	border-color: var(--zinc-700);
-	background: var(--zinc-900);
+	border-color: rgb(var(--zinc-700));
+	background: rgb(var(--zinc-900));
 }
 
 .ProseMirror
@@ -369,8 +310,8 @@
 	li
 	> label
 	input[type="checkbox"]:checked {
-	background-color: var(--zinc-900);
-	border-color: var(--zinc-900);
+	background-color: rgb(var(--zinc-900));
+	border-color: rgb(var(--zinc-900));
 }
 
 .dark
@@ -379,8 +320,8 @@
 	li
 	> label
 	input[type="checkbox"]:checked {
-	background-color: var(--zinc-100);
-	border-color: var(--zinc-100);
+	background-color: rgb(var(--zinc-100));
+	border-color: rgb(var(--zinc-100));
 }
 
 .ProseMirror
@@ -400,7 +341,7 @@
 	li
 	> label
 	input[type="checkbox"]:checked::after {
-	color: var(--zinc-950);
+	color: rgb(var(--zinc-950));
 }
 
 .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div {
@@ -410,19 +351,19 @@
 
 /* Code Block Styling */
 .ProseMirror pre {
-	background: var(--zinc-100);
-	color: var(--zinc-900);
+	background: rgb(var(--zinc-100));
+	color: rgb(var(--zinc-900));
 	font-family: "JetBrains Mono", monospace;
 	padding: 1rem 1.5rem;
 	border-radius: 0.75rem;
 	margin: 1.5rem 0;
-	border: 1px solid var(--zinc-200);
+	border: 1px solid rgb(var(--zinc-200));
 }
 
 .dark .ProseMirror pre {
-	background: var(--zinc-950);
-	color: var(--zinc-50);
-	border: 1px solid var(--zinc-800);
+	background: rgb(var(--zinc-950));
+	color: rgb(var(--zinc-50));
+	border: 1px solid rgb(var(--zinc-800));
 }
 
 .ProseMirror pre code {
@@ -434,7 +375,7 @@
 
 .hljs-comment,
 .hljs-quote {
-	color: var(--zinc-500);
+	color: rgb(var(--zinc-500));
 }
 
 .hljs-variable,
@@ -468,7 +409,7 @@
 
 .hljs-title,
 .hljs-section {
-	color: var(--indigo-500);
+	color: rgb(var(--indigo-500));
 }
 
 .hljs-keyword,
@@ -478,7 +419,7 @@
 
 .dark .hljs-comment,
 .dark .hljs-quote {
-	color: var(--zinc-400);
+	color: rgb(var(--zinc-400));
 }
 
 .dark .hljs-keyword,
@@ -515,22 +456,22 @@
 .dark .ProseMirror table,
 .dark .ProseMirror table td,
 .dark .ProseMirror table th {
-	border-color: var(--zinc-800);
+	border-color: rgb(var(--zinc-800));
 }
 
 .dark .ProseMirror table th {
-	background-color: var(--zinc-900);
-	color: var(--zinc-100);
+	background-color: rgb(var(--zinc-900));
+	color: rgb(var(--zinc-100));
 }
 
 .ProseMirror table td,
 .ProseMirror table th {
-	border: 1px solid var(--zinc-200);
+	border: 1px solid rgb(var(--zinc-200));
 }
 
 .dark .ProseMirror table td,
 .dark .ProseMirror table th {
-	border: 1px solid var(--zinc-800);
+	border: 1px solid rgb(var(--zinc-800));
 }
 
 .ProseMirror [data-type="taskItem"] > label {
@@ -542,15 +483,15 @@
 }
 
 .ProseMirror blockquote {
-	border-left: 3px solid var(--zinc-200);
+	border-left: 3px solid rgb(var(--zinc-200));
 	padding-left: 1rem;
 	margin: 1rem 0;
-	color: var(--zinc-500);
+	color: rgb(var(--zinc-500));
 }
 
 .dark .ProseMirror blockquote {
-	border-left-color: var(--zinc-700);
-	color: var(--zinc-400);
+	border-left-color: rgb(var(--zinc-700));
+	color: rgb(var(--zinc-400));
 }
 
 /* Slash Command Tippy */

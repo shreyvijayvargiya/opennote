@@ -1019,18 +1019,18 @@ const TiptapEditor = ({
 				>
 					<style>{`
 						.ProseMirror a {
-							color: ${isDarkMode ? "var(--indigo-400)" : "var(--indigo-600)"} !important;
+							color: ${isDarkMode ? "rgb(var(--indigo-400))" : "rgb(var(--indigo-600))"} !important;
 							text-decoration: underline !important;
 							text-decoration-color: ${isDarkMode ? "rgba(129, 140, 248, 0.4)" : "rgba(79, 70, 229, 0.4)"} !important;
 							text-underline-offset: 4px !important;
 							font-weight: 500 !important;
 						}
 						.ProseMirror a:hover {
-							color: ${isDarkMode ? "var(--indigo-300)" : "var(--indigo-700)"} !important;
+							color: ${isDarkMode ? "rgb(var(--indigo-300))" : "rgb(var(--indigo-700))"} !important;
 						}
 						.ProseMirror p.is-editor-empty:first-child::before {
 							content: "Start writing your thoughts...";
-							color: ${isDarkMode ? "var(--zinc-500)" : "var(--zinc-400)"};
+							color: ${isDarkMode ? "rgb(var(--zinc-500))" : "rgb(var(--zinc-400))"};
 							font-style: normal;
 						}
 						.ProseMirror .node-pageInline {

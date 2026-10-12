@@ -111,7 +111,9 @@ node scripts/add-theme.mjs --id my-theme --url https://tweakcn.com/r/themes/<id>
 node scripts/add-theme.mjs --rebuild                                    # regenerate styles/themes.css
 ```
 
-It updates `lib/themes.json` and regenerates `styles/themes.css`; the new chip shows up automatically. Web fonts from themes are ignored (the app stays offline-friendly).
+It updates `lib/themes.json` and regenerates `styles/themes.css` (colors are precomputed to RGB channels, so no `color-mix`/`oklch` browser support is needed); the new card shows up automatically.
+
+After pulling this change, restart `npm run dev` once (delete `.next` if the old look sticks): `tailwind.config.js` changed and the dev server caches it. Web fonts from themes are ignored (the app stays offline-friendly).
 
 ## Keyboard Shortcuts
 

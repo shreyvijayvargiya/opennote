@@ -1,8 +1,8 @@
 import tailwindcssAnimate from "tailwindcss-animate";
 import typography from "@tailwindcss/typography";
 
-// "var(--x)" with Tailwind's opacity modifiers (bg-zinc-100/50) via color-mix
-const v = (name) => `color-mix(in oklab, var(${name}) calc(<alpha-value> * 100%), transparent)`;
+// theme variables hold "R G B" channels (styles/themes.css), so opacity modifiers (bg-zinc-100/50) work
+const v = (name) => `rgb(var(${name}) / <alpha-value>)`;
 const scale = (name) =>
 	Object.fromEntries([50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((n) => [n, v(`--${name}-${n}`)]));
 
