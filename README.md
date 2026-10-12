@@ -97,6 +97,22 @@ Open it with **⌘/Ctrl + L** (or the *Ask AI* button), then add your OpenRouter
 
 Tune the limits in one place, `lib/ai/useChat.js`: `MAX_CHATS`, `MAX_MESSAGES`, `CONTEXT_TOKEN_CAP`.
 
+## Color Themes
+
+Click the palette icon in the sidebar header to pick one of 10 themes (each has light and dark). The choice is saved in `localStorage` (`opennote-theme`) — no database — and applied before first paint, so there is no flash.
+
+How it works: shadcn tokens (`--background`, `--primary`, …) plus a small "bridge" in `tailwind.config.js` that maps Tailwind `zinc`/`white`/`indigo` to theme variables. A theme is just a `[data-theme="id"]` block in `styles/themes.css`.
+
+Add a theme from [tweakcn](https://tweakcn.com): copy its CSS (`:root` / `.dark` blocks) into a file, or use its registry JSON, then:
+
+```bash
+node scripts/add-theme.mjs --id my-theme --name "My Theme" theme.css   # or pipe via stdin
+node scripts/add-theme.mjs --id my-theme --url https://tweakcn.com/r/themes/<id>.json
+node scripts/add-theme.mjs --rebuild                                    # regenerate styles/themes.css
+```
+
+It updates `lib/themes.json` and regenerates `styles/themes.css`; the new chip shows up automatically. Web fonts from themes are ignored (the app stays offline-friendly).
+
 ## Keyboard Shortcuts
 
 Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hotkeys-hook](https://github.com/JohannesKlauss/react-hotkeys-hook) (no `useEffect`).

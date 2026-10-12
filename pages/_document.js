@@ -18,6 +18,12 @@ export default function Document() {
 
 				{/* Base meta tags - route-specific tags are handled in lib/modules/SEO */}
 				<meta name="theme-color" content="#18181b" />
+				{/* Apply the saved light/dark mode and color theme before first paint (no flash). */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `(function(){try{var r=document.documentElement,m=localStorage.getItem('theme'),t=localStorage.getItem('opennote-theme');if(m==='dark'||(!m&&matchMedia('(prefers-color-scheme: dark)').matches))r.classList.add('dark');if(t&&t!=='default')r.setAttribute('data-theme',t)}catch(e){}})()`,
+					}}
+				/>
 			</Head>
 			<body>
 				<Main />

@@ -1,6 +1,7 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../styles/globals.css";
+import "../styles/themes.css";
 import { ThemeProvider, useTheme } from "../lib/context/ThemeContext";
 import { Toaster } from "sonner";
 import { AppProvider } from "../lib/context/AppContext";

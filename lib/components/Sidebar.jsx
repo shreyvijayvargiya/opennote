@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import NoteIcon from "./NoteIcon";
 import IconPicker from "./IconPicker";
+import ThemePicker from "./ThemePicker";
 import {
 	Dialog,
 	DialogContent,
@@ -415,6 +416,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 							>
 								<Menu className="h-4 w-4" />
 							</button>
+							<ThemePicker />
 							<button
 								onClick={toggleTheme}
 								className="rounded-xl p-2 text-zinc-400 transition-all hover:bg-white hover:text-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
