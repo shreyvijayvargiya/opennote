@@ -236,7 +236,7 @@ const ChatInput = ({
 
 	return (
 		<div
-			className="rounded-2xl border bg-background p-2 shadow-sm transition-shadow focus-within:shadow-md"
+			className="rounded-2xl border border-zinc-200 bg-background p-2 shadow-sm dark:border-zinc-800 transition-shadow focus-within:shadow-md"
 			onDragOver={(e) => e.preventDefault()}
 			onDrop={(e) => {
 				e.preventDefault();

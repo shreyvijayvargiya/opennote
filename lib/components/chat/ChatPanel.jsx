@@ -88,7 +88,7 @@ const ChatPanel = ({ notes }) => {
 			aria-hidden={!app.chatOpen}
 			className={cn(
 				// floating rounded card, same look as the sidebar
-				"z-40 shrink-0 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-[width,transform,margin,opacity] duration-300 dark:border-zinc-800 dark:bg-zinc-950",
+				"z-40 shrink-0 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-[width,transform,margin,opacity] duration-300 dark:border-zinc-900 dark:bg-zinc-950",
 				"fixed bottom-2 right-2 top-2 w-[min(25rem,calc(100%-1rem))] sm:static sm:z-auto sm:my-2 sm:mr-2 sm:h-[calc(100%-1rem)]",
 				app.chatOpen
 					? "translate-x-0 sm:w-[25rem]"
@@ -97,7 +97,7 @@ const ChatPanel = ({ notes }) => {
 		>
 			<div className="flex h-full w-full flex-col sm:w-[25rem]">
 				{/* Header */}
-				<div className="flex h-12 shrink-0 items-center gap-1 border-b px-3">
+				<div className="flex h-12 shrink-0 items-center gap-1 border-b border-zinc-100 px-3 dark:border-zinc-900">
 					<Sparkles className="h-4 w-4 text-muted-foreground" />
 					<span className="flex-1 text-sm font-semibold">Assistant</span>
 

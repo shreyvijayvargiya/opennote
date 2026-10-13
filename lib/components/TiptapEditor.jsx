@@ -895,7 +895,7 @@ const TiptapEditor = ({
 			{/* Toolbar - Floating & Minimal */}
 			<div className="max-w-4xl mx-auto w-full px-8 mb-4">
 				<div
-					className={`py-1.5 px-2 border ${isDarkMode ? "border-zinc-800 bg-zinc-900/50" : "border-zinc-200 bg-white/50"} backdrop-blur-md rounded-2xl flex items-center gap-0.5 overflow-x-auto hide-scrollbar sticky top-0 z-10 `}
+					className={`py-1.5 px-2 border ${isDarkMode ? "border-zinc-900 bg-zinc-900/50" : "border-zinc-200 bg-white/50"} backdrop-blur-md rounded-2xl flex items-center gap-0.5 overflow-x-auto hide-scrollbar sticky top-0 z-10 `}
 				>
 					<ToolbarButton
 						active={false}

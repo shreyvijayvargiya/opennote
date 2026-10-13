@@ -136,20 +136,20 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 							e.stopPropagation();
 							onToggle(note.id, !expanded);
 						}}
-						className="ml-1 flex-shrink-0 rounded-md p-0.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+						className="ml-0.5 flex-shrink-0 rounded-md p-0.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
 						title={expanded ? "Collapse" : "Expand"}
 					>
 						{expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
 					</button>
 				) : (
-					<span className="ml-1 w-4 flex-shrink-0" />
+					<span className="ml-0.5 w-4 flex-shrink-0" />
 				)}
 				<IconPicker note={note} onChange={(value) => onIconChange(note, value)}>
 					<button
 						type="button"
 						title="Change icon"
 						onClick={(e) => e.stopPropagation()}
-						className="ml-0.5 flex-shrink-0 rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+						className="ml-0 flex-shrink-0 rounded-md p-0.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
 					>
 						<NoteIcon note={note} size={14} />
 					</button>
@@ -157,7 +157,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 				<button
 					type="button"
 					onClick={() => onSelect(note.id)}
-					className="flex min-w-0 flex-1 items-center gap-1.5 py-2.5 pl-1 pr-20 text-left"
+					className="flex min-w-0 flex-1 items-center gap-1.5 py-1 pl-1 pr-20 text-left"
 				>
 					<span
 						className={cn(
@@ -197,7 +197,7 @@ const NoteTreeItem = React.memo(function NoteTreeItem({
 				</div>
 			</div>
 			{hasChildren && expanded && (
-				<div className="ml-3 space-y-0.5 border-l border-zinc-100 pl-2 dark:border-zinc-800">
+				<div className="ml-2.5 space-y-0 border-l border-zinc-100 pl-1 dark:border-zinc-900">
 					{children.map((child) => (
 						<NoteTreeItem
 							key={child.id}
@@ -401,7 +401,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 			<aside
 				className={cn(
 					// floating rounded card (style from main)
-					"fixed bottom-2 left-2 top-2 z-50 flex w-[min(18rem,calc(100%-1rem))] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-transform duration-300 dark:border-zinc-800 dark:bg-zinc-950 md:static md:z-auto md:my-2 md:ml-2 md:h-[calc(100%-1rem)] md:w-72 md:shrink-0",
+					"fixed bottom-2 left-2 top-2 z-50 flex w-[min(18rem,calc(100%-1rem))] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 shadow-sm transition-transform duration-300 dark:border-zinc-900 dark:bg-zinc-950 md:static md:z-auto md:my-2 md:ml-2 md:h-[calc(100%-1rem)] md:w-72 md:shrink-0",
 					app.sidebarOpen ? "translate-x-0" : "-translate-x-[120%] md:translate-x-0",
 					app.sidebarCollapsed && "md:hidden",
 				)}
@@ -477,7 +477,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 								<RootDropZone />
 							</div>
 						)}
-						<div className="hide-scrollbar -mx-1 flex-1 space-y-0.5 overflow-y-auto hide-scrollbar px-1 pb-12">
+						<div className="hide-scrollbar -mx-1 flex-1 space-y-0 overflow-y-auto hide-scrollbar px-1 pb-8">
 							{filteredRoots.length > 0 ? (
 								filteredRoots.map((note) => (
 									<NoteTreeItem
@@ -514,8 +514,8 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 						</DragOverlay>
 					</DndContext>
 
-					<div className="mt-4 space-y-2 border-t border-zinc-100 pt-4 dark:border-zinc-900">
-						<div className="flex items-center justify-between px-2 py-1">
+					<div className="mt-2 space-y-1 border-t border-zinc-100 pt-2 dark:border-zinc-900">
+						<div className="flex items-center justify-between px-1.5 py-0.5">
 							<div className="flex items-center gap-2">
 								<div className={`h-1.5 w-1.5 rounded-full ${mcpConnected ? "bg-green-500" : "bg-zinc-200 dark:bg-zinc-800"}`} />
 								<span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Status</span>
@@ -525,23 +525,23 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 							</span>
 						</div>
 
-						<div className="grid grid-cols-2 gap-1.5">
+						<div className="grid grid-cols-2 gap-1">
 							<Link
 								href="/graph-notes"
-								className="group flex items-center justify-center gap-2 rounded-xl border border-transparent bg-white p-2.5 text-[10px] font-bold uppercase tracking-widest text-zinc-500 shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900"
+								className="group flex items-center justify-center gap-1.5 rounded-lg border border-transparent bg-white px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-zinc-500 shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900"
 							>
-								<Network className="h-3.5 w-3.5" />
+								<Network className="h-3 w-3" />
 								Map
 							</Link>
 							<button
 								onClick={onOpenConfig}
-								className="group flex items-center justify-center gap-2 rounded-xl border border-transparent bg-white p-2.5 text-[10px] font-bold uppercase tracking-widest text-zinc-500 shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900"
+								className="group flex items-center justify-center gap-1.5 rounded-lg border border-transparent bg-white px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-zinc-500 shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900"
 							>
-								<Settings className="h-3.5 w-3.5" />
+								<Settings className="h-3 w-3" />
 								Config
 							</button>
 						</div>
-						<div className="p-2 pl-12 text-xs">
+						<div className="px-2 py-1 text-[10px] leading-tight text-zinc-500">
 							<p>
 								Built using{" "}
 								<a href="https://buildsaas.dev" className="text-indigo-500">

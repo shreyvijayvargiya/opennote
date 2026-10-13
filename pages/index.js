@@ -262,7 +262,7 @@ const IndexPage = () => {
 												)}
 												<Panel id={`group-${group.index}`} order={i} minSize={25} maxSize={75}>
 													<div
-														className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+														className="flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-zinc-950"
 														onPointerDownCapture={() => app.setActiveGroup(i)}
 													>
 														<TabBar
@@ -320,7 +320,7 @@ const IndexPage = () => {
 									})}
 								</PanelGroup>
 							) : (
-								<div className="flex-1 h-full flex flex-col items-center justify-center p-12 rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+								<div className="flex-1 h-full flex flex-col items-center justify-center p-12 rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-zinc-950">
 									<div className="relative group cursor-pointer" onClick={handleCreateNote}>
 										<div className="absolute inset-0 bg-zinc-500 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
 										<div className="relative w-32 h-32 bg-white dark:bg-zinc-900 rounded-[3rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 flex items-center justify-center mb-12 rotate-6 group-hover:rotate-0 transition-all duration-700 ease-out">
