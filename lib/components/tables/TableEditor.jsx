@@ -60,6 +60,17 @@ const compare = (col, a, b, tables) => {
 	return cellText(col, a, tables).localeCompare(cellText(col, b, tables), undefined, { numeric: true, sensitivity: "base" });
 };
 
+/**
+ * One stable cell renderer for every column. (A new function per render would make React remount
+ * the cell, e.g. closing a chip popover while you rename a chip.) Column info comes from table meta.
+ */
+const CellRenderer = ({ row, column, getValue, table }) => {
+	const { columnsById, setCell } = table.options.meta;
+	const col = columnsById.get(column.id);
+	if (!col) return null;
+	return <Cell column={col} value={getValue()} onChange={(v) => setCell(row.original.id, col.id, v)} />;
+};
+
 const lightBtn =
 	"flex h-8 items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-100 px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-200 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700";
 const iconBtn =
@@ -236,6 +247,7 @@ const TableEditor = ({ initialNote, breadcrumb = [], tables = [], splitCandidate
 		const ids = new Set(Object.keys(rowSelection));
 		commit((t) => ({ ...t, rows: t.rows.filter((r) => !ids.has(r.id)) }));
 		setRowSelection({});
+		setPagination((p) => ({ ...p, pageIndex: 0 }));
 		setConfirmRows(false);
 		toast.success(`${ids.size} row${ids.size > 1 ? "s" : ""} deleted`);
 	};
@@ -297,13 +309,14 @@ const TableEditor = ({ initialNote, breadcrumb = [], tables = [], splitCandidate
 			table.columns.map((col) => ({
 				id: col.id,
 				accessorFn: (row) => row.cells[col.id],
-				cell: ({ row, getValue }) => <Cell column={col} value={getValue()} onChange={(v) => setCell(row.original.id, col.id, v)} />,
+				cell: CellRenderer,
 				sortingFn: (a, b, colId) => compare(col, a.getValue(colId), b.getValue(colId), tablesMapRef.current),
 				filterFn: (row, colId, ruleList) => ruleList.every((r) => matchRule(col, row.getValue(colId), r, tablesMapRef.current)),
 				enableSorting: true,
 			})),
-		[table.columns, setCell],
+		[table.columns],
 	);
+	const columnsById = useMemo(() => new Map(table.columns.map((c) => [c.id, c])), [table.columns]);
 
 	const columnFilters = useMemo(() => {
 		const by = new Map();
@@ -316,6 +329,7 @@ const TableEditor = ({ initialNote, breadcrumb = [], tables = [], splitCandidate
 		columns,
 		state: { sorting, globalFilter: search, columnFilters, rowSelection, pagination },
 		getRowId: (r) => r.id,
+		meta: { columnsById, setCell },
 		enableRowSelection: true,
 		autoResetPageIndex: false,
 		onSortingChange: setSorting,
