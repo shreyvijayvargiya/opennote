@@ -4,6 +4,10 @@
 
 **By Shrey Vijayvargiya** · 8 min read
 
+[![Watch the RowTabs demo (3:37)](rowtabs-explainer-thumb.png)](rowtabs-explainer.mp4)
+
+*Watch the 3 minute demo: [`rowtabs-explainer.mp4`](rowtabs-explainer.mp4)*
+
 ---
 
 Last month I opened a new Airtable base to track leads for a side project. Twenty minutes later I had not tracked a single lead.

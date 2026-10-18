@@ -9,6 +9,14 @@ Editable tables with 100 ready-made templates, an AI assistant and MCP. Everythi
 
 </div>
 
+<div align="center">
+
+[![Watch the RowTabs demo (3:37)](marketing/rowtabs-explainer-thumb.png)](marketing/rowtabs-explainer.mp4)
+
+**Watch the 3 minute demo** · [Read the full article](marketing/rowtabs-medium-blog.md) · [Download the 100 table templates (CSV)](marketing/rowtabs-100-table-templates.csv)
+
+</div>
+
 RowTabs is a table app in the spirit of Airtable and Notion databases. Every table is editable by default, with sorting, searching and filtering, and tables can live inside other tables. There is **no backend and no database to run**: tables are stored in your browser's IndexedDB, so it is fast, private and works offline.
 
 It started as [OpenNote](https://github.com/shreyvijayvargiya/opennote) (a local-first notes app) and reuses its shell: sidebar tree, tabs, split view, AI chat, themes and MCP. The Tiptap editor is replaced by a TanStack Table based editor.
@@ -86,6 +94,12 @@ docs/             Markdown rendered on the Getting started page
 mcp-server/       MCP bridge for Claude Desktop
 scripts/          add-theme.mjs (tweakcn themes)
 ```
+
+## Demo video and article
+
+- **Demo video** (3:37, narrated, with subtitles): [`marketing/rowtabs-explainer.mp4`](marketing/rowtabs-explainer.mp4), narration script in [`marketing/rowtabs-explainer-narration.md`](marketing/rowtabs-explainer-narration.md), subtitles in [`marketing/rowtabs-explainer.srt`](marketing/rowtabs-explainer.srt).
+- **Article** ("I Built a Free, Open-Source Airtable Alternative That Lives in Your Browser"): [`marketing/rowtabs-medium-blog.md`](marketing/rowtabs-medium-blog.md), written for Medium.
+- **Template catalog** (all 100 gallery tables): [Markdown](marketing/rowtabs-100-table-templates.md) · [CSV](marketing/rowtabs-100-table-templates.csv), and the CSV can be imported straight into RowTabs.
 
 ## Documentation
 
