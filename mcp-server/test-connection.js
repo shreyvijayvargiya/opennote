@@ -2,15 +2,15 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 
 async function testConnection() {
-	const apiKey = process.env.OpenNote_API_KEY;
-	const baseUrl = process.env.OpenNote_URL || "http://localhost:3000";
+	const apiKey = process.env.ROWTABS_API_KEY;
+	const baseUrl = process.env.ROWTABS_URL || "http://localhost:3000";
 
 	if (!apiKey) {
 		console.error(
-			"❌ Error: OpenNote_API_KEY environment variable is required.",
+			"❌ Error: ROWTABS_API_KEY environment variable is required.",
 		);
 		console.log(
-			"Usage: OpenNote_API_KEY=your_key node mcp-server/test-connection.js",
+			"Usage: ROWTABS_API_KEY=your_key node mcp-server/test-connection.js",
 		);
 		process.exit(1);
 	}

@@ -19,6 +19,9 @@ import {
 	Folder,
 	FolderPlus,
 	GripVertical,
+	LayoutGrid,
+	BookOpen,
+	Upload,
 	Menu,
 	Moon,
 	Network,
@@ -30,6 +33,8 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import { createTable } from "../tables/tableService";
+import { cellText, emptyTable, parseTable } from "../tables/schema";
 import { Button } from "./ui/button";
 import NoteIcon from "./NoteIcon";
 import IconPicker from "./IconPicker";
@@ -48,6 +53,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useApp } from "../context/AppContext";
@@ -56,14 +62,20 @@ import { noteService } from "../db/noteService";
 import { db as localDb } from "../db/localDb";
 import { cn } from "../utils/cn";
 
-const noteMatchesQuery = (note, query) => {
-	if (!query) return true;
-	const q = query.toLowerCase();
-	return (
-		note.title?.toLowerCase().includes(q) ||
-		note.content?.replace(/<[^>]*>/g, "").toLowerCase().includes(q)
-	);
+// searchable text of a table (title, column names and cell values), computed once per record
+const searchCache = new WeakMap();
+const searchText = (note) => {
+	if (searchCache.has(note)) return searchCache.get(note);
+	let text = (note.title || "").toLowerCase();
+	if (!note.isFolder) {
+		const t = parseTable(note.content);
+		text += " " + t.columns.map((c) => c.name).join(" ").toLowerCase();
+		for (const r of t.rows) for (const c of t.columns) text += " " + cellText(c, r.cells[c.id]).toLowerCase();
+	}
+	searchCache.set(note, text);
+	return text;
 };
+const noteMatchesQuery = (note, query) => !query || searchText(note).includes(query.toLowerCase());
 
 const isSelfOrDescendant = (noteId, ancestorId, byId) => {
 	if (noteId == null || ancestorId == null) return false;
@@ -323,17 +335,17 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 	const activeNote = byId.get(app.activeId);
 	const createItem = async (isFolder) => {
 		try {
-			const note = await noteService.saveNote(user.uid, {
-				title: isFolder ? "New folder" : "Untitled Note",
-				content: isFolder ? "<p></p>" : "<p>Start typing...</p>",
+			const note = await createTable({
+				title: isFolder ? "New folder" : "Untitled table",
+				table: isFolder ? { v: 1, columns: [], rows: [] } : emptyTable(),
 				parentId: activeNote?.id,
 				isFolder,
 			});
 			if (activeNote) setExpanded(activeNote.id, true);
 			app.openNote(note.id);
-			toast.success(isFolder ? "Folder created" : "Note created");
-		} catch {
-			toast.error("Failed to create");
+			toast.success(isFolder ? "Folder created" : "Table created");
+		} catch (e) {
+			toast.error(e.message || "Failed to create");
 		}
 	};
 
@@ -365,7 +377,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 		if (!over || over.id === active.id) return;
 		const parentId = over.id === "root" ? undefined : over.id;
 		if (parentId != null && isSelfOrDescendant(parentId, active.id, byId)) {
-			return toast.error("Can't move a note into itself");
+			return toast.error("Can't move a table into itself");
 		}
 		if (byId.get(active.id)?.parentId === parentId) return;
 		await localDb.notes.update(active.id, { parentId, updatedAt: Date.now() });
@@ -408,7 +420,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 			>
 				<div className="flex h-full flex-col p-5">
 					<div className="mb-6 flex items-center justify-between">
-						<h1 className="text-lg font-black tracking-tight">OpenNote</h1>
+						<h1 className="text-lg font-black tracking-tight">RowTabs</h1>
 						<div className="flex items-center gap-1">
 							<button
 								onClick={() => app.setSidebarCollapsed(true)}
@@ -439,7 +451,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 							<Search className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-300" />
 							<input
 								type="text"
-								placeholder="Search notes..."
+								placeholder="Search tables..."
 								className="w-full rounded-xl border-none bg-white py-2 pl-10 pr-4 text-xs shadow-sm outline-none transition-all placeholder:text-zinc-300 focus:ring-1 focus:ring-zinc-500/20 dark:bg-zinc-900"
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
@@ -454,10 +466,17 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 							<DropdownMenuContent align="end" className="w-56">
 								<DropdownMenuLabel>Create {target}</DropdownMenuLabel>
 								<DropdownMenuItem onSelect={() => createItem(false)}>
-									<FilePlus /> New note
+									<FilePlus /> New table
 								</DropdownMenuItem>
 								<DropdownMenuItem onSelect={() => createItem(true)}>
 									<FolderPlus /> New folder
+								</DropdownMenuItem>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem onSelect={() => app.setGalleryOpen(true)}>
+									<LayoutGrid /> From gallery…
+								</DropdownMenuItem>
+								<DropdownMenuItem onSelect={() => app.setImportOpen(true)}>
+									<Upload /> Import file…
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
@@ -525,9 +544,19 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 							</span>
 						</div>
 
+						<button
+							onClick={() => app.setDocsOpen(!app.docsOpen)}
+							className={cn(
+								"group flex w-full items-center justify-center gap-1.5 rounded-lg border border-transparent bg-white px-2 py-1 text-[9px] font-bold uppercase tracking-widest shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900",
+								app.docsOpen ? "text-zinc-800 dark:text-zinc-100" : "text-zinc-500",
+							)}
+						>
+							<BookOpen className="h-3 w-3" />
+							Getting started
+						</button>
 						<div className="grid grid-cols-2 gap-1">
 							<Link
-								href="/graph-notes"
+								href="/map"
 								className="group flex items-center justify-center gap-1.5 rounded-lg border border-transparent bg-white px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-zinc-500 shadow-sm transition-all hover:border-zinc-500/20 dark:bg-zinc-900"
 							>
 								<Network className="h-3 w-3" />
@@ -543,20 +572,14 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 						</div>
 						<div className="px-2 py-1 text-[10px] leading-tight text-zinc-500">
 							<p>
-								Built using{" "}
-								<a href="https://buildsaas.dev" className="text-indigo-500">
-									BuildSaaS
-								</a>
-							</p>
-							<p>
-								Fully open-source,{" "}
+								Free &amp; open-source ·{" "}
 								<a
-									href="https://github.com/shreyvijayvargiya/opennote"
+									href="https://github.com/shreyvijayvargiya/rowtabs"
 									className="text-indigo-500"
 									target="_blank"
 									rel="noreferrer"
 								>
-									OpenNote
+									RowTabs on GitHub
 								</a>
 							</p>
 						</div>
@@ -570,7 +593,7 @@ const Sidebar = ({ notes, user, mcpConnected, onOpenConfig }) => {
 						<DialogTitle>Delete “{pendingDelete?.title || "Untitled"}”?</DialogTitle>
 						<DialogDescription>
 							{pendingDelete && countDescendants(pendingDelete.id, childrenByParent) > 0
-								? `This also deletes ${countDescendants(pendingDelete.id, childrenByParent)} nested page(s). `
+								? `This also deletes ${countDescendants(pendingDelete.id, childrenByParent)} nested table(s). `
 								: ""}
 							This can't be undone.
 						</DialogDescription>

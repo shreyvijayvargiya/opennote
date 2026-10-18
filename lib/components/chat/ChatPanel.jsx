@@ -109,12 +109,12 @@ const ChatPanel = ({ notes }) => {
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
 							<DropdownMenuItem
-								onSelect={() => downloadText("opennote-chat.md", "text/markdown", chatToMarkdown(chat.messages))}
+								onSelect={() => downloadText("rowtabs-chat.md", "text/markdown", chatToMarkdown(chat.messages))}
 							>
 								Markdown (.md)
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onSelect={() => downloadText("opennote-chat.html", "text/html", chatToHtml(chat.messages))}
+								onSelect={() => downloadText("rowtabs-chat.html", "text/html", chatToHtml(chat.messages))}
 							>
 								HTML (.html)
 							</DropdownMenuItem>
@@ -264,13 +264,13 @@ const ChatPanel = ({ notes }) => {
 				</DialogContent>
 			</Dialog>
 
-			{/* AI wants to delete a note: always ask first */}
+			{/* AI wants to delete a table: always ask first */}
 			<Dialog open={!!chat.confirmReq} onOpenChange={(o) => !o && chat.answerConfirm(false)}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Delete “{chat.confirmReq?.title}”?</DialogTitle>
 						<DialogDescription>
-							The assistant wants to delete this note
+							The assistant wants to delete this table
 							{chat.confirmReq?.nested
 								? ` and ${chat.confirmReq.nested} nested page${chat.confirmReq.nested > 1 ? "s" : ""}`
 								: ""}

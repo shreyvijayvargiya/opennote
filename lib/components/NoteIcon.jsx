@@ -1,10 +1,10 @@
 import React from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { File01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
+import { Table01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
 import { parseIcon } from "../icons";
 import { cn } from "../utils/cn";
 
-/** Icon of a note/folder: its custom icon/emoji, else the default file/folder icon. */
+/** Icon of a table/folder: its custom icon/emoji, else the default table/folder icon. */
 const NoteIcon = ({ note, size = 14, className }) => {
 	const custom = parseIcon(note?.icon);
 	if (custom?.type === "emoji") {
@@ -19,7 +19,7 @@ const NoteIcon = ({ note, size = 14, className }) => {
 	}
 	return (
 		<HugeiconsIcon
-			icon={custom?.value || (note?.isFolder ? Folder01Icon : File01Icon)}
+			icon={custom?.value || (note?.isFolder ? Folder01Icon : Table01Icon)}
 			size={size}
 			strokeWidth={1.8}
 			className={cn("shrink-0", className)}

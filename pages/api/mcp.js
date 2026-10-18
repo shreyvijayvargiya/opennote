@@ -75,7 +75,7 @@ export default async function handler(req, res) {
 		console.log(`[MCP Server] Authenticating new session for local user`);
 
 		const mcpServer = new McpServer(
-			{ name: "opennote-hosted-local", version: "1.0.0" },
+			{ name: "rowtabs-hosted-local", version: "1.0.0" },
 			{ capabilities: { tools: {} } },
 		);
 

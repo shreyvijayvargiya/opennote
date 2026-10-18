@@ -291,7 +291,7 @@ const ChatInput = ({
 					ref={inputRef}
 					value={value}
 					rows={1}
-					placeholder="Ask anything · @ to tag a note"
+					placeholder="Ask anything · @ to tag a table"
 					onChange={(e) => {
 						setValue(e.target.value);
 						autosize();
@@ -323,7 +323,7 @@ const ChatInput = ({
 						style={{ top: mention.top - 4, left: Math.max(0, mention.left) }}
 					>
 						{mentionItems.length === 0 ? (
-							<div className="px-2.5 py-2 text-xs text-muted-foreground">No notes found</div>
+							<div className="px-2.5 py-2 text-xs text-muted-foreground">No tables found</div>
 						) : (
 							mentionItems.map((n, i) => (
 								<button

@@ -1,6 +1,6 @@
 import React from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon, Cancel01Icon, LayoutGridIcon, Upload01Icon } from "@hugeicons/core-free-icons";
 import NoteIcon from "./NoteIcon";
 import { cn } from "../utils/cn";
 
@@ -9,7 +9,7 @@ import { cn } from "../utils/cn";
  * Rounded pills (no bottom line). Icons are display-only here: change them in the sidebar.
  * `right` renders at the end of the bar (e.g. the "Ask AI" button).
  */
-const TabBar = ({ tabs, active, byId, isActiveGroup, onSelect, onClose, onNew, right }) => (
+const TabBar = ({ tabs, active, byId, isActiveGroup, onSelect, onClose, onNew, onGallery, onImport, right }) => (
 	<div className="hide-scrollbar flex shrink-0 items-center gap-1 overflow-x-auto hide-scrollbar p-1.5">
 		{tabs.map((id) => {
 			const note = byId.get(id);
@@ -55,11 +55,31 @@ const TabBar = ({ tabs, active, byId, isActiveGroup, onSelect, onClose, onNew, r
 		<button
 			type="button"
 			onClick={onNew}
-			title="New note in this tab group"
+			title="New table"
 			className="shrink-0 rounded-xl p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
 		>
 			<HugeiconsIcon icon={Add01Icon} size={14} strokeWidth={2} />
 		</button>
+		{onGallery && (
+			<button
+				type="button"
+				onClick={onGallery}
+				title="Table gallery: 100 ready-made tables"
+				className="shrink-0 rounded-xl p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+			>
+				<HugeiconsIcon icon={LayoutGridIcon} size={14} strokeWidth={2} />
+			</button>
+		)}
+		{onImport && (
+			<button
+				type="button"
+				onClick={onImport}
+				title="Import CSV, Excel, JSON…"
+				className="shrink-0 rounded-xl p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+			>
+				<HugeiconsIcon icon={Upload01Icon} size={14} strokeWidth={2} />
+			</button>
+		)}
 		{right && <div className="ml-auto shrink-0 pl-2">{right}</div>}
 	</div>
 );

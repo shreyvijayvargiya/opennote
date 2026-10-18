@@ -114,7 +114,7 @@ const palette = (name, hexes) => steps.map((n, i) => `\t--${name}-${n}: ${ch(par
 
 export const defaultCss = (list) => {
 	const t = list.find((x) => x.id === "default");
-	return `/* theme:default (OpenNote) */\n:root,\n[data-theme="default"] {\n\t--radius: ${t.light.radius ?? "0.75rem"};\n\t--white: 255 255 255;\n${palette("zinc", TW_ZINC)}\n${palette("indigo", TW_INDIGO)}\n${tokens(t.light)}\n}\n.dark,\n[data-theme="default"].dark {\n${tokens(t.dark)}\n}\n`;
+	return `/* theme:default (RowTabs) */\n:root,\n[data-theme="default"] {\n\t--radius: ${t.light.radius ?? "0.75rem"};\n\t--white: 255 255 255;\n${palette("zinc", TW_ZINC)}\n${palette("indigo", TW_INDIGO)}\n${tokens(t.light)}\n}\n.dark,\n[data-theme="default"].dark {\n${tokens(t.dark)}\n}\n`;
 };
 
 export const themeCss = (t) => {

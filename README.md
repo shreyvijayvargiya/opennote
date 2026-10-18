@@ -1,107 +1,113 @@
-# OpenNote - Local-First AI Note Taking App
+<div align="center">
 
-OpenNote is a privacy-focused, **local-first** note-taking application. Unlike traditional apps, OpenNote **does not use Firebase, Supabase, or any cloud database**. Everything you create stays on your machine.
+# RowTabs
 
-It combines rich-text editing (Tiptap), high-performance local storage (IndexedDB), and advanced AI capabilities (MCP & Local Embeddings).
+**The free, open-source, local-first Airtable alternative.**
+Editable tables with 100 ready-made templates, an AI assistant and MCP. Everything lives in your browser.
+
+[Live docs in the app](#documentation) · [Gallery](#the-gallery-100-tables) · [Run it](#getting-started) · [Deploy](#deploy-to-vercel)
+
+</div>
+
+RowTabs is a table app in the spirit of Airtable and Notion databases. Every table is editable by default, with sorting, searching and filtering, and tables can live inside other tables. There is **no backend and no database to run**: tables are stored in your browser's IndexedDB, so it is fast, private and works offline.
+
+It started as [OpenNote](https://github.com/shreyvijayvargiya/opennote) (a local-first notes app) and reuses its shell: sidebar tree, tabs, split view, AI chat, themes and MCP. The Tiptap editor is replaced by a TanStack Table based editor.
 
 ## Features
 
-- **Purely Local Storage**: Your notes are stored in your browser's IndexedDB via **Dexie.js**. Zero cloud dependency, zero latency, and 100% privacy.
-- **Tiptap Rich Text Editor**:
-  - Markdown-like commands (`/` slash menu).
-  - **Smart Link Support**: Automatic link detection (e.g., typing `google.com` creates a link) and custom link editing in Indigo.
-  - Image, table, and task list support.
-- **Privacy-First AI**:
-  - **Local Embeddings**: Uses **Transformers.js** to run vector models directly in your browser. **No OpenAI API key required** for the graph visualization!
-  - **3D Neural Map**: Explore note connections through a beautiful 3D force graph based on semantic similarity.
-- **Model Context Protocol (MCP)**: Seamlessly connect your local notes to Claude Desktop, allowing AI agents to search and read your private notes without them ever leaving your computer.
-- **Voice-to-Text**: Record notes via the Web Speech API and optionally process them with OpenRouter for clean-up, translation, and structuring.
-- **AI Assistant (right panel)**: A Claude-style chat that reads and edits your notes. Bring your own [OpenRouter](https://openrouter.ai) key and pick any model from the input. See [AI Assistant](#ai-assistant).
-- **Tabs + split view**: every open note gets a tab above the breadcrumbs. Split into up to 2 tab groups side by side (split icon next to download, or the split icon on a sidebar row). Drag the divider to resize (25-75%); it highlights on hover.
-- **Sidebar**: nested notes and folders, drag & drop to move notes, create inside the active note, confirm-before-delete, and a custom **icon / emoji** per note or folder.
-- **Selection toolbar**: select text for Bold, Italic, Link, List, Heading, Copy and **Ask AI**.
-- **Export**: download any note as Markdown (`.md`) or HTML (`.html`) next to the copy button.
+- **Tables, not documents**: a Notion-style table editor built on **TanStack Table** with click-to-sort headers, global search, stackable filters, paging, row selection and *select all*.
+- **16 column types**: text (bold / italic / link), number, checkbox, date (shadcn Calendar), **chips** (colored, rename and recolor them), link, **table link**, phone, slider, OTP, files, rating, avatar, icon, **code** (language dropdown with syntax highlighting) and image.
+- **Nested tables**: drag a table onto another in the sidebar, or add a *Table link* column that points to any table (with search), or create a linked table from the cell.
+- **Drag and drop**: reorder rows, columns and sidebar tables.
+- **The gallery**: 100 tables across 12 categories (CRM, Leads, Pipelines, Digital Products, E-commerce, Marketing, Projects, HR, Finance, Content, Education, Personal) with previews, search and a category dropdown. Search uses **Fuse.js** and understands loose phrases: `table for leads whatsapp` finds *WhatsApp Leads*.
+- **Import**: CSV, TSV, Excel, JSON, Markdown or HTML tables, with column types detected for you.
+- **Export**: copy as Markdown, download **PDF, CSV, HTML, Markdown, JSON or SQL**, or open **View as code** for SQL, React, JSON, Markdown, HTML and CSV.
+- **Tabs + split view**: every open table is a tab, up to two groups side by side with a resizable divider.
+- **AI assistant** (right panel, ⌘L): bring your own [OpenRouter](https://openrouter.ai) key, tag tables with `@`, attach images, PDFs and CSVs. It can read, create, add rows to, edit and delete tables. Every change has **Keep / Undo** and deleting a table always asks first.
+- **⌘K command menu**: your tables, gallery examples, AI assistant, theme toggle, docs and MCP config.
+- **Getting started page**: documentation rendered from Markdown (`/docs`) inside the app.
+- **10 color themes** (light and dark), compatible with [tweakcn](https://tweakcn.com).
+- **MCP** (Claude Desktop and other agents) and WebMCP tools for tables.
 
-## Getting Started
+## Getting started
 
-### Prerequisites
+```bash
+git clone https://github.com/shreyvijayvargiya/rowtabs.git
+cd rowtabs
+npm install
+npm run dev        # http://localhost:3000
+```
 
-- Node.js 18+
-- OpenRouter API Key (Optional: only needed for the AI assistant; paste it in the chat panel, it stays in your browser)
+Requires Node.js 18+. The AI assistant needs an OpenRouter key (optional): paste it in the chat panel, it stays in your browser.
 
-### Installation
+## The gallery (100 tables)
 
-1. **Clone the repository**:
+Click the grid icon next to the tabs (or press ⌘K). Pick a table and it opens with real columns and sample rows, ready to edit. To add a template, add one line to `lib/tables/gallery.js`:
 
-   ```bash
-   git clone https://github.com/shreyvijayvargiya/opennote.git
-   cd opennote
-   ```
+```js
+t("Leads", "WhatsApp Leads", "Leads that reach you on WhatsApp…", "whatsapp leads chat phone",
+  "Name; WhatsApp number|phone; Status|chips:New,Replied,Qualified,Lost; Follow-up|date", "Rahul Verma, Priya Nair");
+```
 
-2. **Install dependencies**:
+## Limits
 
-   ```bash
-   npm install
-   ```
+Everything is in the browser, so there are sensible caps (see `LIMITS` in `lib/tables/schema.js`):
 
-3. **Run the development server**:
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Open [http://localhost:3000](http://localhost:3000)** in your browser.
-
-## Model Context Protocol (MCP) Integration
-
-OpenNote includes a built-in MCP bridge that allows Claude Desktop to interact with your local notes.
-
-### 1. Generating an API Key
-
-Open the application, click on your profile in the sidebar, and click **"New API Key"**. This key is stored locally and used to authenticate the MCP bridge.
-
-### 2. Connecting Claude Desktop
-
-The application provides a ready-to-copy JSON configuration in the Profile modal. It automatically detects your project path.
-
-Add the configuration to your `claude_desktop_config.json`:
-
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-## AI Assistant
-
-Open it with **⌘/Ctrl + L** (or the *Ask AI* button), then add your OpenRouter key when asked. The key is stored only in your browser's IndexedDB and is only ever sent to `openrouter.ai`.
-
-| Feature | How it works |
+| Limit | Value |
 | --- | --- |
-| **Models** | Dropdown inside the chat input. Edit the list in `lib/ai/openrouter.js` (`MODELS`). |
-| **Tag notes** | Type `@` and pick a note; the list opens at the cursor. Tagged notes are highlighted in the input and in sent messages, and clicking one opens that note. They are injected into the prompt. |
-| **Ask AI** | Select text in an editor, click **Ask AI**: the text is attached to the chat with its note id. |
-| **Attachments** | `+` button, drag & drop, or paste: images (copy/paste works), PDF (parsed by OpenRouter) and CSV. |
-| **Dictation** | Mic button in the input (Web Speech API). |
-| **History** | Clock icon: up to **10** chats × **50** messages are kept in IndexedDB (oldest pruned). Delete one or all. |
-| **Image preview** | Click any image (in the input or a message) to open it full size. Right-click, or use `⌘/Ctrl+C` (copy) / `⌘/Ctrl+S` (download) / `Esc` (close). These keys are only active while the preview is open. |
-| **Export chat** | Download icon in the chat header: Markdown or HTML. |
-| **Markdown** | Replies render GitHub-flavoured Markdown: clickable links, tables, task lists, copyable code blocks. `[Title](page://id)` links open that note. Long tagged-note names are truncated in sent messages. |
-| **Copy & time** | Every message has a timestamp and a copy button. |
+| Tables per browser | 200 |
+| Rows per table | 2,000 |
+| Columns per table | 40 |
+| One file or image in a cell | 2 MB |
+| One table | about 20 MB |
+| Import file | 15 MB |
 
-**The AI reads the live editor, not the database.** Open notes are read from (and written to) the Tiptap editor, so unsaved typing is included. Only notes that are not open fall back to IndexedDB. The system prompt contains the folder/page tree (with ids) so the model understands your structure, and nested pages show up as `[Title](page://id)` links.
+## Keyboard shortcuts
 
-**Context is capped.** Tagged notes + selections share a **2,000 token** budget; long notes are trimmed and get a heading outline instead (the model can call `read_note` for more).
+| Shortcut | Action |
+| --- | --- |
+| ⌘/Ctrl + K | Command menu |
+| ⌘/Ctrl + L | Open the AI assistant |
+| ⌘/Ctrl + B | Toggle the sidebar |
 
-**Edits are reviewable, deletes are gated** (like Cursor):
+## Tech stack
 
-- `update_note` / `create_note` are applied right away and the chat shows **Keep** / **Undo** for each change.
-- `delete_note` always opens a confirmation dialog first; nothing is deleted until you confirm.
+Next.js 15 · React 18 · **@tanstack/react-table** · **fuse.js** · Dexie (IndexedDB) · Tailwind CSS · shadcn-style Radix components · Hugeicons · @dnd-kit · react-day-picker · highlight.js · papaparse · SheetJS · jspdf · react-hotkeys-hook · OpenRouter · MCP SDK.
 
-Tune the limits in one place, `lib/ai/useChat.js`: `MAX_CHATS`, `MAX_MESSAGES`, `CONTEXT_TOKEN_CAP`.
+## Project structure
 
-## Color Themes
+```
+pages/            index (app), map (table graph), api/ (MCP endpoints)
+lib/tables/       data model, gallery (100 templates), import, export, filters, AI table operations
+lib/components/   sidebar, tabs, themes page, chat panel
+lib/components/tables/   TableEditor, cells (16 types), gallery, import, ⌘K, docs page
+lib/ai/           chat hook, OpenRouter client, tools the assistant can call
+docs/             Markdown rendered on the Getting started page
+mcp-server/       MCP bridge for Claude Desktop
+scripts/          add-theme.mjs (tweakcn themes)
+```
 
-Click the palette icon in the sidebar header to open the Themes page in the centre content: 10 live-preview cards (each has light and dark); click one to apply it to the whole app. The choice is saved in `localStorage` (`opennote-theme`) — no database — and applied before first paint, so there is no flash.
+## Documentation
 
-How it works: shadcn tokens (`--background`, `--primary`, …) plus a small "bridge" in `tailwind.config.js` that maps Tailwind `zinc`/`white`/`indigo` to theme variables. A theme is just a `[data-theme="id"]` block in `styles/themes.css`.
+The docs live in [`docs/`](docs) and are rendered inside the app (sidebar → **Getting started**): getting started, tables and columns, AI and MCP, tech stack and deploying.
+
+## Deploy to Vercel
+
+RowTabs needs no environment variables and no database.
+
+1. Push the repo to GitHub.
+2. In Vercel choose **Add New → Project** and import it.
+3. Keep the defaults and click **Deploy**.
+
+CLI: `npm i -g vercel && vercel --prod`. To sync tables to a server later, see *Adding a database* in the docs.
+
+## MCP
+
+Open **Config** in the sidebar (or ⌘K → *MCP config*), generate a key and copy the Claude Desktop config. Variables: `ROWTABS_API_KEY`, `ROWTABS_URL`.
+
+## Color themes
+
+Click the palette icon in the sidebar header to open the Themes page: 10 live-preview cards (each has light and dark); click one to apply it. The choice is saved in `localStorage` (`rowtabs-theme`).
 
 Add a theme from [tweakcn](https://tweakcn.com): copy its CSS (`:root` / `.dark` blocks) into a file, or use its registry JSON, then:
 
@@ -111,98 +117,12 @@ node scripts/add-theme.mjs --id my-theme --url https://tweakcn.com/r/themes/<id>
 node scripts/add-theme.mjs --rebuild                                    # regenerate styles/themes.css
 ```
 
-It updates `lib/themes.json` and regenerates `styles/themes.css` (colors are precomputed to RGB channels, so no `color-mix`/`oklch` browser support is needed); the new card shows up automatically.
+Colors are precomputed to RGB channels, so no `color-mix` / `oklch` browser support is needed.
 
-After pulling this change, restart `npm run dev` once (delete `.next` if the old look sticks): `tailwind.config.js` changed and the dev server caches it. Web fonts from themes are ignored (the app stays offline-friendly).
+## Contributing
 
-## Keyboard Shortcuts
-
-Shortcuts are registered once in `lib/components/RootLayout.jsx` with [react-hotkeys-hook](https://github.com/JohannesKlauss/react-hotkeys-hook) (no `useEffect`).
-
-| Shortcut | Action |
-| --- | --- |
-| `⌘/Ctrl + L` | Open the AI assistant and focus its input |
-| `⌘/Ctrl + B` | Toggle the left sidebar (Bold keeps its toolbar button; its shortcut is disabled) |
-| `Enter` / `Shift + Enter` | Send / new line in the chat input |
-| `@` | Tag a note in the chat input |
-| `Esc`, `⌘/Ctrl+C`, `⌘/Ctrl+S` | Close / copy / download, **only while the image preview is open** |
-
-## Sidebar, Tabs & Split View
-
-- **New note / folder**: the `+` next to search creates at the top level, or *inside the active note* when one is open.
-- **Drag & drop** ([dnd-kit](https://dndkit.com)): drop a note on another to nest it; drop it on the "Move to top level" strip to un-nest.
-- **Tabs**: opening a note adds a tab (up to 10 per group). Middle-click or `x` closes it; `+` creates a note.
-- **Split view** (max 2 groups): use the split icon in the editor header (pick or create a note to open beside) or the split icon on a sidebar row. Each group has its own tabs. Drag the divider to resize; widths are limited to 25-75%.
-- **Icons**: click the icon in front of a sidebar row to pick one of ~115 [Hugeicons](https://hugeicons.com) or ~60 emoji (searchable). It's stored on the note in IndexedDB as a string (`hugeicons:Rocket01Icon` or `emoji:🔥`). Tabs show the same icon but can't change it. Add more icons in `lib/icons.js`.
-- **Delete** asks for confirmation.
-
-## Tech Stack
-
-- **Framework**: Next.js (App/Pages)
-- **Editor**: Tiptap
-- **Database**: Dexie.js (IndexedDB) - **No Firebase / No Cloud DB**
-- **State Management**: React Query
-- **Visualization**: Three.js & React Force Graph 3D
-- **AI**: Transformers.js (Local Embeddings), OpenRouter (LLM, streaming + tool calls), Web Speech API, MCP SDK
-- **UI**: shadcn/ui pattern (Radix UI + class-variance-authority + tailwind-merge), Tailwind CSS & Lucide Icons
-- **Notifications**: Sonner
-
-### npm modules added for the assistant & app shell
-
-| Module | Used for |
-| --- | --- |
-| `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-context-menu`, `@radix-ui/react-slot` | shadcn-style dialog, dropdowns (history, model picker, add menu), image right-click menu and button |
-| `class-variance-authority`, `clsx`, `tailwind-merge` | `cn()` helper and component variants |
-| `react-hotkeys-hook` | global shortcuts (⌘L, ⌘B) |
-| `@dnd-kit/core` | sidebar drag & drop |
-| `react-resizable-panels` | split view with resizable width |
-| `react-markdown`, `remark-gfm` | rendering assistant replies (tables, task lists, links) |
-| `@hugeicons/react`, `@hugeicons/core-free-icons` | note / folder / tab icons |
-| `@radix-ui/react-popover` | the icon picker |
-| `textarea-caret` | positioning the `@` dropdown at the cursor |
-| `@tiptap/extension-bubble-menu`, `@tiptap/extension-bold` | selection toolbar, freeing ⌘B |
-
-## Project Structure
-
-```
-pages/
-  _app.js                 Providers + RootLayout (hotkeys)
-  index.js                App shell: sidebar, editor panes (split view), chat panel
-  graph-notes.js          3D neural map
-  api/                    MCP endpoints
-lib/
-  ai/
-    useChat.js            The single chat hook: history, streaming, tool loop, Keep/Undo
-    openrouter.js         OpenRouter streaming client + model list
-    tools.js              read / create / update / delete note tools
-    noteOps.js            Live-editor registry, Markdown <-> HTML, tree outline, 2k-token context
-    attachments.js        Image / PDF / CSV processing
-    mentions.js           @tag parsing / highlighting
-    exportChat.js         Chat -> Markdown / HTML
-  components/
-    chat/                 ChatPanel, ChatInput, MessageItem, Markdown, ImagePreview
-    ui/                   shadcn-style button, dialog, dropdown-menu
-    Sidebar.jsx           Tree, search, add, drag & drop, delete dialog
-    TabBar.jsx            Tabs of one editor group (rounded pills)
-    NoteIcon.jsx          Renders a note's Hugeicon / emoji
-    IconPicker.jsx        Searchable icon + emoji popover
-    SelectionToolbar.jsx  Floating toolbar on text selection
-    RootLayout.jsx        Global keyboard shortcuts
-    TiptapEditor.jsx      The editor (+ export, live-editor registration)
-  context/                AppContext (sidebar, chat, editor groups + tabs), ThemeContext
-  icons.js                Icon + emoji catalog and the stored-string format
-  db/                     Dexie schema (notes, settings, apiKeys, chats) + noteService
-  mcp/                    WebMCP tool definitions
-  tiptap/, ui/, utils/    Editor extensions and helpers
-mcp-server/               stdio bridge for Claude Desktop
-```
+Pull requests are welcome. Run `npm run dev`, change something, open a PR.
 
 ## License
 
 MIT
-
-## Styling notes
-
-- Layout: floating rounded sidebar, one rounded-xl card per editor group, floating rounded assistant card.
-- Buttons are light-theme (`bg-zinc-100`, bordered) everywhere; there are no dark filled CTAs in light mode.
-- Scrollbars are hidden on every `overflow-y-auto` / `overflow-x-auto` / `overflow-auto` container via the root rule in `styles/globals.css` (and the `.hide-scrollbar` class for anything else).

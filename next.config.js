@@ -53,10 +53,9 @@ const nextConfig = {
 			},
 		];
 	},
-	webpack: (config, { isServer }) => {
-		if (!isServer) {
-			config.resolve.alias["yjs"] = path.resolve(__dirname, "node_modules/yjs");
-		}
+	webpack: (config) => {
+		// docs/*.md are imported as plain strings (rendered by the Getting started page)
+		config.module.rules.push({ test: /\.md$/, type: "asset/source" });
 		return config;
 	},
 };

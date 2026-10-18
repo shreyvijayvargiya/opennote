@@ -21,7 +21,7 @@ export default function Document() {
 				{/* Apply the saved light/dark mode and color theme before first paint (no flash). */}
 				<script
 					dangerouslySetInnerHTML={{
-						__html: `(function(){try{var r=document.documentElement,m=localStorage.getItem('theme'),t=localStorage.getItem('opennote-theme');if(m==='dark'||(!m&&matchMedia('(prefers-color-scheme: dark)').matches))r.classList.add('dark');if(t&&t!=='default')r.setAttribute('data-theme',t)}catch(e){}})()`,
+						__html: `(function(){try{var r=document.documentElement,m=localStorage.getItem('theme'),t=localStorage.getItem('rowtabs-theme');if(m==='dark'||(!m&&matchMedia('(prefers-color-scheme: dark)').matches))r.classList.add('dark');if(t&&t!=='default')r.setAttribute('data-theme',t)}catch(e){}})()`,
 					}}
 				/>
 			</Head>

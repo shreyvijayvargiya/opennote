@@ -7,12 +7,12 @@ import {
 
 // Removed Firebase Admin - switching to local-only stub
 console.error(
-	"OpenNote MCP Server: Running in local-only mode (Firebase removed)",
+	"RowTabs MCP Server: Running in local-only mode (Firebase removed)",
 );
 
 const mcpServer = new McpServer(
 	{
-		name: "opennote-mcp-local",
+		name: "rowtabs-mcp-local",
 		version: "1.0.0",
 	},
 	{
@@ -54,7 +54,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
 	const transport = new StdioServerTransport();
 	await mcpServer.connect(transport);
-	console.error("OpenNote MCP Server ready on stdio");
+	console.error("RowTabs MCP Server ready on stdio");
 }
 
 main().catch((error) => {

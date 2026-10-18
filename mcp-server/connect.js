@@ -25,20 +25,20 @@ function log(message) {
 }
 
 async function main() {
-	const apiKey = process.env.OpenNote_API_KEY;
-	const baseUrl = process.env.OpenNote_URL || "http://localhost:3000";
+	const apiKey = process.env.ROWTABS_API_KEY;
+	const baseUrl = process.env.ROWTABS_URL || "http://localhost:3000";
 
 	log(`[Bridge] Starting bridge process (PID: ${process.pid})`);
 	log(`[Bridge] Base URL: ${baseUrl}`);
 	log(`[Bridge] API Key presence: ${apiKey ? "Yes" : "No"}`);
 
 	if (!apiKey) {
-		log("[Bridge] Error: OpenNote_API_KEY environment variable is required.");
+		log("[Bridge] Error: ROWTABS_API_KEY environment variable is required.");
 		process.exit(1);
 	}
 
 	const mcpServer = new McpServer(
-		{ name: "opennote-bridge", version: "1.0.0" },
+		{ name: "rowtabs-bridge", version: "1.0.0" },
 		{ capabilities: { tools: {} } },
 	);
 
@@ -57,7 +57,7 @@ async function main() {
 		// Using modern StreamableHTTPClientTransport
 		hostedTransport = new StreamableHTTPClientTransport(url);
 		const client = new Client(
-			{ name: "opennote-bridge-client", version: "1.0.0" },
+			{ name: "rowtabs-bridge-client", version: "1.0.0" },
 			{ capabilities: {} },
 		);
 

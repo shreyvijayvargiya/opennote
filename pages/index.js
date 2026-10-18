@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
 	Plus,
-	FileText,
+	Table2,
+	LayoutGrid,
+	Upload,
 	Menu,
 	X,
 	Key,
@@ -14,8 +16,14 @@ import { toast } from "sonner";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { noteService } from "../lib/db/noteService";
+import { createTable } from "../lib/tables/tableService";
+import { emptyTable } from "../lib/tables/schema";
 import { db as localDb } from "../lib/db/localDb";
-import TiptapEditor from "../lib/components/TiptapEditor";
+import TableEditor from "../lib/components/tables/TableEditor";
+import GalleryModal from "../lib/components/tables/GalleryModal";
+import ImportModal from "../lib/components/tables/ImportModal";
+import CommandMenu from "../lib/components/tables/CommandMenu";
+import DocsPage from "../lib/components/tables/DocsPage";
 import Sidebar from "../lib/components/Sidebar";
 import ChatPanel from "../lib/components/chat/ChatPanel";
 import TabBar from "../lib/components/TabBar";
@@ -24,7 +32,7 @@ import { useApp } from "../lib/context/AppContext";
 import ThemesPage from "../lib/components/ThemesPage";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
-import { getNotesTools } from "../lib/mcp/notesTools";
+import { getTablesTools } from "../lib/mcp/tablesTools";
 
 const IndexPage = () => {
 	const { isDarkMode } = useTheme();
@@ -35,7 +43,6 @@ const IndexPage = () => {
 		displayName: "Local User",
 		photoURL: null,
 	});
-	const [showProfileModal, setShowProfileModal] = useState(false);
 	const [systemInfo, setSystemInfo] = useState({
 		workspacePath: "",
 		connectScriptPath: "",
@@ -99,7 +106,7 @@ const IndexPage = () => {
 				window.webmcp = wmcp;
 
 				// Register tools using the externalized definitions
-				const tools = getNotesTools(user);
+				const tools = getTablesTools(user);
 				tools.forEach((tool) => {
 					wmcp.registerTool(tool.name, tool.description, tool.schema, tool.execute);
 				});
@@ -158,14 +165,21 @@ const IndexPage = () => {
 
 	const handleCreateNote = async () => {
 		try {
-			const newNote = await noteService.saveNote(user.uid, {
-				title: "Untitled Note",
-				content: "<p>Start typing...</p>",
-			});
-			app.openNote(newNote.id);
-			toast.success("Note created locally");
+			const rec = await createTable({ title: "Untitled table", table: emptyTable() });
+			app.openNote(rec.id);
+			toast.success("Table created in your browser");
 		} catch (error) {
-			toast.error("Failed to create note");
+			toast.error(error.message || "Failed to create table");
+		}
+	};
+
+	const handleDeleteTable = async (note) => {
+		try {
+			await noteService.deleteNote(note.id);
+			app.closeNote(note.id);
+			toast.success("Table deleted");
+		} catch {
+			toast.error("Failed to delete table");
 		}
 	};
 
@@ -191,15 +205,15 @@ const IndexPage = () => {
 
 	const getMcpConfig = (apiKey = "YOUR_API_KEY") => ({
 		mcpServers: {
-			opennote: {
+			rowtabs: {
 				command: "node",
 				args: [
 					systemInfo.connectScriptPath ||
-						"/path/to/opennote/mcp-server/connect.js",
+						"/path/to/rowtabs/mcp-server/connect.js",
 				],
 				env: {
-					OpenNote_API_KEY: apiKey,
-					OpenNote_URL: "http://localhost:3000",
+					ROWTABS_API_KEY: apiKey,
+					ROWTABS_URL: "http://localhost:3000",
 				},
 			},
 		},
@@ -214,7 +228,7 @@ const IndexPage = () => {
 					notes={notes}
 					user={user}
 					mcpConnected={mcpStatus.connected}
-					onOpenConfig={() => setShowProfileModal(true)}
+					onOpenConfig={() => app.setConfigOpen(true)}
 				/>
 
 				<main className="flex-1 flex min-w-0 relative overflow-hidden">
@@ -227,7 +241,7 @@ const IndexPage = () => {
 							>
 								<Menu className="w-5 h-5" />
 							</button>
-							<h1 className="text-xs font-black tracking-[0.2em] uppercase">OpenNote</h1>
+							<h1 className="text-xs font-black tracking-[0.2em] uppercase">RowTabs</h1>
 							<div className="flex items-center gap-2">
 								<button
 									onClick={app.openChat}
@@ -248,6 +262,8 @@ const IndexPage = () => {
 						<div className="flex-1 min-h-0 overflow-hidden flex flex-col px-2 py-2">
 							{app.themesOpen ? (
 								<ThemesPage />
+							) : app.docsOpen ? (
+								<DocsPage />
 							) : viewGroups.length > 0 ? (
 								<PanelGroup direction="horizontal" className="h-full">
 									{viewGroups.map((group, i) => {
@@ -273,6 +289,8 @@ const IndexPage = () => {
 															onSelect={(id) => app.activateTab(group.index, id)}
 															onClose={(id) => app.closeTab(group.index, id)}
 															onNew={handleCreateNote}
+															onGallery={() => app.setGalleryOpen(true)}
+															onImport={() => app.setImportOpen(true)}
 															right={
 																!app.chatOpen &&
 																i === viewGroups.length - 1 && (
@@ -294,23 +312,19 @@ const IndexPage = () => {
 															transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
 															className="flex-1 min-h-0 flex flex-col"
 														>
-															<TiptapEditor
+															<TableEditor
 																initialNote={note}
+																tables={notes}
 																breadcrumb={getBreadcrumb(note.id)}
 																onNavigateNote={app.openNote}
-																onOpenPage={app.openNote}
 																splitCandidates={splitCandidates.filter((n) => n.id !== note.id)}
 																onSplitPick={app.openSplit}
 																onSplitNew={async () => {
-																	const created = await noteService.saveNote(user.uid, {
-																		title: "Untitled Note",
-																		content: "<p>Start typing...</p>",
-																	});
+																	const created = await createTable({ title: "Untitled table", table: emptyTable() });
 																	app.openSplit(created.id);
 																}}
-																onUpdate={() => {
-																	// Local state is updated via useLiveQuery automatically
-																}}
+																onDeleteTable={handleDeleteTable}
+																onOpenGallery={() => app.setGalleryOpen(true)}
 															/>
 														</motion.div>
 													</div>
@@ -324,21 +338,38 @@ const IndexPage = () => {
 									<div className="relative group cursor-pointer" onClick={handleCreateNote}>
 										<div className="absolute inset-0 bg-zinc-500 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
 										<div className="relative w-32 h-32 bg-white dark:bg-zinc-900 rounded-[3rem] shadow-2xl border border-zinc-100 dark:border-zinc-800 flex items-center justify-center mb-12 rotate-6 group-hover:rotate-0 transition-all duration-700 ease-out">
-											<FileText className="w-12 h-12 text-zinc-500" />
+											<Table2 className="w-12 h-12 text-zinc-500" />
 										</div>
 									</div>
-									<h2 className="text-3xl font-black mb-4 tracking-tight">Pure focus.</h2>
-									<p className="text-sm text-zinc-400 dark:text-zinc-500 max-w-[280px] text-center leading-relaxed mb-12 font-medium">
-										Your ideas deserve a clean space. Select a note or start something fresh.
+									<h2 className="text-3xl font-black mb-4 tracking-tight">Tables, offline.</h2>
+									<p className="text-sm text-zinc-400 dark:text-zinc-500 max-w-[300px] text-center leading-relaxed mb-10 font-medium">
+										Start from one of 100 ready-made tables, import a CSV or Excel file, or begin with a blank grid. Everything stays in your browser.
 									</p>
-									<button
-										onClick={handleCreateNote}
-										className="group px-8 py-4 rounded-2xl border border-zinc-200 bg-zinc-100 text-zinc-800 dark:border-transparent dark:bg-zinc-100 dark:text-zinc-900 text-sm font-black shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-200 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
-									>
-										<Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-										Create New Idea
-									</button>
+									<div className="flex flex-wrap items-center justify-center gap-2">
+										<button
+											onClick={() => app.setGalleryOpen(true)}
+											className="group px-6 py-3 rounded-2xl border border-zinc-200 bg-zinc-100 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 text-sm font-bold shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all flex items-center gap-2"
+										>
+											<LayoutGrid className="w-4 h-4" />
+											Browse gallery
+										</button>
+										<button
+											onClick={handleCreateNote}
+											className="group px-6 py-3 rounded-2xl border border-zinc-200 bg-zinc-100 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 text-sm font-bold shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all flex items-center gap-2"
+										>
+											<Plus className="w-4 h-4 transition-transform group-hover:rotate-90" />
+											Blank table
+										</button>
+										<button
+											onClick={() => app.setImportOpen(true)}
+											className="group px-6 py-3 rounded-2xl border border-zinc-200 bg-zinc-100 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 text-sm font-bold shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all flex items-center gap-2"
+										>
+											<Upload className="w-4 h-4" />
+											Import file
+										</button>
+									</div>
 									<p className="mt-6 text-[11px] text-zinc-400">
+										<kbd className="rounded border px-1">⌘K</kbd> search ·{" "}
 										<kbd className="rounded border px-1">⌘B</kbd> sidebar ·{" "}
 										<kbd className="rounded border px-1">⌘L</kbd> assistant
 									</p>
@@ -352,9 +383,13 @@ const IndexPage = () => {
 			</div>
 
 
+			<GalleryModal />
+			<ImportModal />
+			<CommandMenu tables={notes} />
+
 			{/* MCP Config Modal */}
 			<AnimatePresence>
-				{showProfileModal && (
+				{app.configOpen && (
 					<div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/20 dark:bg-black/40 backdrop-blur-sm">
 						<motion.div
 							initial={{ opacity: 0, scale: 0.95 }}
@@ -366,7 +401,7 @@ const IndexPage = () => {
 								<div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
 									<h3 className="font-bold">MCP Configuration</h3>
 									<button
-										onClick={() => setShowProfileModal(false)}
+										onClick={() => app.setConfigOpen(false)}
 										className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
 									>
 										<X className="w-4 h-4" />
@@ -461,7 +496,7 @@ const IndexPage = () => {
 										<p className="text-xs text-zinc-500 leading-relaxed">
 											Copy this configuration to your{" "}
 											<code>claude_desktop_config.json</code> to connect Claude
-											to your local notes.
+											to your local tables.
 										</p>
 
 										<div className="relative group">
@@ -495,7 +530,7 @@ const IndexPage = () => {
 
 								<div className="p-4 bg-zinc-50 dark:bg-zinc-950/50 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
 									<button
-										onClick={() => setShowProfileModal(false)}
+										onClick={() => app.setConfigOpen(false)}
 										className="px-6 py-2 rounded-xl border border-zinc-200 bg-zinc-100 text-zinc-800 hover:bg-zinc-200 dark:border-transparent dark:bg-zinc-100 dark:text-zinc-900 text-sm font-bold"
 									>
 										Done
