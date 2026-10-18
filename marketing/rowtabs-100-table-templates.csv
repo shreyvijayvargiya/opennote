@@ -1,0 +1,101 @@
+#,Category,Table,What it is for,Columns,Column types
+1,CRM,Contacts CRM,"Every person you work with, their company, stage and owner.",Name; Company; Email; Phone; Stage; Owner; Last contacted,text; text; text; phone; chips; avatar; date
+2,CRM,Companies & Accounts,"Accounts with industry, size, owner and health.",Company; Industry; Employees; Website; Health; Owner,text; chips; number; link; chips; avatar
+3,CRM,Customer Support Tickets,"Support requests with priority, status and assignee.",Ticket; Customer; Priority; Status; Assignee; Created; Notes,text; text; chips; chips; avatar; date; text
+4,CRM,Customer Feedback Log,"Collect feedback, ratings and follow-up actions.",Feedback; Customer; Rating; Channel; Follow up; Date,text; text; rating; chips; checkbox; date
+5,CRM,Deals Tracker,"Deals with value, stage and expected close date.",Deal; Company; Value; Stage; Close date; Owner,text; text; number; chips; date; avatar
+6,CRM,Client Onboarding Checklist,Step-by-step onboarding with owners and due dates.,Step; Client; Done; Owner; Due; Status,text; text; checkbox; avatar; date; chips
+7,CRM,Meeting Notes & Follow-ups,Meeting log with decisions and next steps.,Meeting; Date; Attendees; Decision; Next step; Done,text; date; text; text; text; checkbox
+8,CRM,Partner & Reseller Directory,"Partners, tiers, contacts and commission.",Partner; Tier; Contact; Email; Commission %; Website,text; chips; text; text; number; link
+9,CRM,Renewals Calendar,"Upcoming renewals, amounts and risk.",Customer; Plan; Renewal date; MRR; Risk; Owner,text; chips; date; number; chips; avatar
+10,Leads,WhatsApp Leads,"Leads that reach you on WhatsApp: number, source, status and next follow-up.",Name; WhatsApp number; Source; Status; Last message; Follow-up; Hot,text; phone; chips; chips; text; date; checkbox
+11,Leads,Instagram DM Leads,People who DM you on Instagram with handle and interest.,Handle; Name; Followers; Interest; Status; Profile; Next step,text; text; number; chips; chips; link; date
+12,Leads,LinkedIn Outreach Leads,Prospects you contact on LinkedIn with message stages.,Prospect; Title; Company; Profile; Connection; Message; Date,text; text; text; link; chips; chips; date
+13,Leads,Cold Email Leads,Cold email list with sequence status and replies.,Name; Email; Company; Sequence; Opened; Replied; Sent,text; text; text; chips; checkbox; checkbox; date
+14,Leads,Local Business Leads,Local businesses by category and city with phone and status.,Business; Category; City; Phone; Status; Notes,text; text; text; phone; chips; text
+15,Leads,Real Estate Leads,"Buyers and renters with budget, area and property type.",Lead; Phone; Budget; Area; Type; Stage; Visit date,text; phone; number; text; chips; chips; date
+16,Leads,Webinar Registrants,"Registrants, attendance and follow-up status.",Name; Email; Registered; Attended; Interest; Follow-up,text; text; date; checkbox; chips; chips
+17,Leads,SaaS Free Trial Leads,"Trial users, activation and conversion signals.",User; Email; Trial start; Activated; Usage score; Plan; Owner,text; text; date; checkbox; slider; chips; avatar
+18,Leads,Inbound Website Leads,Form submissions with source page and lead score.,Name; Email; Message; Page; Score; Status; Received,text; text; text; link; rating; chips; date
+19,Leads,Event & Conference Leads,"Badge scans, notes and next steps from events.",Name; Company; Email; Event; Interest; Next step; Met on,text; text; text; text; rating; chips; date
+20,Pipelines,Sales Pipeline,Deals moving from lead to closed-won.,Deal; Company; Value; Stage; Probability; Close date; Owner,text; text; number; chips; slider; date; avatar
+21,Pipelines,Recruiting Pipeline,"Candidates by stage, role and interviewer.",Candidate; Role; Stage; Rating; Interviewer; Next date; Resume,text; text; chips; rating; avatar; date; files
+22,Pipelines,Investor Fundraising Pipeline,"Investors, check size and conversation stage.",Investor; Firm; Check size; Stage; Warm intro; Next step; Link,text; text; number; chips; checkbox; date; link
+23,Pipelines,Content Pipeline,Ideas moving from draft to published.,Title; Format; Stage; Author; Publish date; Link,text; chips; chips; avatar; date; link
+24,Pipelines,Partnership Pipeline,Partnership opportunities and negotiation stage.,Partner; Type; Stage; Owner; Value; Next step,text; chips; chips; avatar; number; date
+25,Pipelines,Freelance Client Pipeline,"Freelance leads, proposals and invoices.",Client; Project; Budget; Stage; Deadline; Contact,text; text; number; chips; date; link
+26,Pipelines,Product Feature Pipeline,Feature requests from idea to shipped.,Feature; Votes; Stage; Effort; Owner; Release,text; number; chips; chips; avatar; date
+27,Pipelines,Customer Onboarding Pipeline,New customers through setup milestones.,Customer; Plan; Stage; Progress; CSM; Go-live,text; chips; chips; slider; avatar; date
+28,Digital Products,Digital Product Catalog,All your digital products with price and status.,Product; Type; Price; Status; Sales; Page; Cover,text; chips; number; chips; number; link; image
+29,Digital Products,Course Sales Tracker,"Course buyers, price paid and access status.",Student; Email; Course; Paid; Date; Access; Progress,text; text; text; number; date; checkbox; slider
+30,Digital Products,Template Store Inventory,"Templates for sale, formats and downloads.",Template; Format; Price; Downloads; Rating; Files,text; chips; number; number; rating; files
+31,Digital Products,Ebook Launch Tracker,"Ebook launch tasks, channels and metrics.",Task; Channel; Status; Due; Owner,text; chips; chips; date; avatar
+32,Digital Products,SaaS Pricing Plans,"Plans, limits and monthly/annual price.",Plan; Monthly; Annual; Seats; Popular; Features,text; number; number; number; checkbox; text
+33,Digital Products,License Keys,"License keys, owners and activation.",Key; Customer; Product; Issued; Activated; Seats,otp; text; text; date; checkbox; number
+34,Digital Products,Digital Downloads Orders,Orders for downloadable products with delivery status.,Order; Customer; Product; Amount; Delivered; Date; Files,text; text; text; number; checkbox; date; files
+35,Digital Products,Affiliate Program Tracker,"Affiliates, clicks, sales and payouts.",Affiliate; Email; Clicks; Sales; Commission; Paid; Link,text; text; number; number; number; checkbox; link
+36,Digital Products,Product Roadmap & Releases,"Releases, versions and changelog notes.",Release; Version; Status; Date; Highlights; Owner,text; text; chips; date; text; avatar
+37,E-commerce,Product Inventory,"Stock levels, SKUs and reorder points.",Product; SKU; Category; Price; Stock; Reorder; Photo,text; text; chips; number; number; checkbox; image
+38,E-commerce,Orders,Customer orders with status and totals.,Order; Customer; Total; Status; Date; Tracking,text; text; number; chips; date; link
+39,E-commerce,Store Customers,Shoppers with lifetime value and last order.,Customer; Email; Orders; Lifetime value; Segment; Last order,text; text; number; number; chips; date
+40,E-commerce,Suppliers,"Suppliers, lead times and contacts.",Supplier; Contact; Phone; Lead time (days); Rating; Terms,text; text; phone; number; rating; text
+41,E-commerce,Returns & Refunds,"Return requests, reasons and refund status.",Order; Customer; Reason; Refund; Status; Date,text; text; chips; number; chips; date
+42,E-commerce,Discount Codes,"Promo codes with discount, limit and expiry.",Code; Discount %; Used; Limit; Expires; Active,text; number; number; number; date; checkbox
+43,E-commerce,Shipping Tracker,"Parcels, carriers and delivery estimates.",Order; Carrier; Tracking; Shipped; ETA; Delivered,text; chips; link; date; date; checkbox
+44,E-commerce,Product Reviews,"Reviews with rating, product and reply status.",Review; Product; Rating; Reviewer; Replied; Date,text; text; rating; text; checkbox; date
+45,E-commerce,Dropshipping Products,"Winning products, cost, price and margin.",Product; Supplier link; Cost; Price; Margin %; Status; Image,text; link; number; number; number; chips; image
+46,E-commerce,Abandoned Carts,Abandoned carts with value and recovery status.,Customer; Email; Cart value; Items; Recovery; Date,text; text; number; number; chips; date
+47,Marketing,Campaign Planner,"Campaigns with channel, budget and results.",Campaign; Channel; Budget; Status; Start; Owner; Results,text; chips; number; chips; date; avatar; text
+48,Marketing,SEO Keyword Tracker,"Keywords, volume, difficulty and ranking.",Keyword; Volume; Difficulty; Position; Intent; Target page,text; number; slider; number; chips; link
+49,Marketing,Ad Creative Tests,"Ad variants with spend, CTR and winner.",Creative; Platform; Spend; CTR %; Winner; Preview,text; chips; number; number; checkbox; image
+50,Marketing,Influencer Outreach,"Creators, reach and collaboration status.",Creator; Platform; Followers; Rate; Status; Profile,text; chips; number; number; chips; link
+51,Marketing,Email Newsletter Schedule,"Newsletter issues, subject lines and send dates.",Issue; Subject; Send date; Status; Open rate %; Author,text; text; date; chips; number; avatar
+52,Marketing,Social Media Calendar,"Posts by platform, date and status.",Post; Platform; Publish; Status; Visual; Owner,text; chips; date; chips; image; avatar
+53,Marketing,Backlink Tracker,"Backlink targets, domain rating and status.",Site; URL; DR; Status; Contact; Date,text; link; number; chips; text; date
+54,Marketing,Product Launch Checklist,Everything to ship a launch on time.,Task; Owner; Due; Done; Priority; Notes,text; avatar; date; checkbox; chips; text
+55,Marketing,Marketing Budget,Budget vs. actual spend by channel.,Channel; Budget; Spent; Owner; Month; Notes,text; number; number; avatar; date; text
+56,Projects,Project Tracker,"Projects with owner, status, progress and deadline.",Project; Owner; Status; Progress; Deadline; Priority,text; avatar; chips; slider; date; chips
+57,Projects,Sprint Backlog,"Stories with points, assignee and sprint.",Story; Points; Assignee; Status; Sprint; Priority,text; number; avatar; chips; text; chips
+58,Projects,Bug Tracker,"Bugs with severity, steps and fix status.",Bug; Severity; Status; Assignee; Reported; Snippet,text; chips; chips; avatar; date; code
+59,Projects,Task Board,Simple to-do board with status and due date.,Task; Status; Due; Owner; Done,text; chips; date; avatar; checkbox
+60,Projects,OKRs,"Objectives, key results and progress.",Objective; Key result; Owner; Progress; Quarter; Confidence,text; text; avatar; slider; chips; rating
+61,Projects,Team Roadmap,Quarterly roadmap by team and theme.,Initiative; Team; Quarter; Status; Owner,text; chips; chips; chips; avatar
+62,Projects,Meeting Agenda Tracker,"Agenda items, owners and time boxes.",Topic; Owner; Minutes; Decision; Done,text; avatar; number; text; checkbox
+63,Projects,Risk Register,"Risks with likelihood, impact and mitigation.",Risk; Likelihood; Impact; Owner; Mitigation; Status,text; chips; chips; avatar; text; chips
+64,Projects,Client Projects,"Client work with scope, budget and invoices.",Client; Project; Budget; Status; Deadline; Invoice sent,text; text; number; chips; date; checkbox
+65,HR & Hiring,Candidate Tracker,Candidates for open roles with stage and score.,Candidate; Role; Stage; Score; Email; Resume,text; text; chips; rating; text; files
+66,HR & Hiring,Employee Directory,"People, roles, teams and contact info.",Name; Role; Team; Email; Phone; Start date; Avatar,text; text; chips; text; phone; date; avatar
+67,HR & Hiring,Leave Tracker,Leave requests with dates and approval.,Employee; Type; From; To; Status; Approver,text; chips; date; date; chips; avatar
+68,HR & Hiring,Interview Scorecard,Interview scores by skill and recommendation.,Candidate; Interviewer; Skills; Culture; Recommendation; Notes,text; avatar; rating; rating; chips; text
+69,HR & Hiring,Job Openings,"Open roles with department, location and status.",Role; Department; Location; Salary range; Status; Posted; Listing,text; chips; text; text; chips; date; link
+70,HR & Hiring,Performance Reviews,Review cycles with ratings and goals.,Employee; Manager; Cycle; Rating; Goals met; Due; Feedback,text; avatar; chips; rating; slider; date; text
+71,HR & Hiring,New Hire Onboarding,Onboarding tasks for each new hire.,Task; New hire; Owner; Due; Done; Status,text; text; avatar; date; checkbox; chips
+72,HR & Hiring,Team Birthdays & Anniversaries,Celebrations calendar for the team.,Person; Event; Date; Gift sent; Avatar,text; chips; date; checkbox; avatar
+73,Finance,Expense Tracker,Expenses by category with receipts.,Expense; Category; Amount; Date; Paid by; Receipt,text; chips; number; date; avatar; files
+74,Finance,Invoice Tracker,"Invoices, amounts, due dates and paid status.",Invoice; Client; Amount; Issued; Due; Status; Link,text; text; number; date; date; chips; link
+75,Finance,Budget Planner,Monthly budget by category vs actual.,Category; Planned; Actual; Month; Over budget; Notes,text; number; number; date; checkbox; text
+76,Finance,Subscriptions Tracker,Recurring subscriptions and renewal dates.,Service; Cost; Billing; Renews; Category; Active; Link,text; number; chips; date; chips; checkbox; link
+77,Finance,Freelance Income Log,Income by client and project.,Client; Project; Amount; Date; Status; Method,text; text; number; date; chips; chips
+78,Finance,Investment Portfolio,"Holdings, cost basis and notes.",Asset; Type; Quantity; Buy price; Current price; Thesis,text; chips; number; number; number; text
+79,Finance,Bills & Payments,Bills with due dates and autopay.,Bill; Amount; Due; Paid; Autopay; Account,text; number; date; checkbox; checkbox; text
+80,Finance,Savings Goals,"Goals with target, saved amount and deadline.",Goal; Target; Saved; Progress; Deadline; Priority,text; number; number; slider; date; chips
+81,Content,Blog Editorial Calendar,"Posts with keyword, author and publish date.",Title; Keyword; Author; Status; Publish; URL,text; text; avatar; chips; date; link
+82,Content,YouTube Video Planner,"Video ideas, scripts and upload dates.",Video; Hook; Status; Upload; Thumbnail; Link,text; text; chips; date; image; link
+83,Content,Podcast Episodes,"Episodes, guests and recording status.",Episode; Guest; Record date; Status; Length (min); Link,text; text; date; chips; number; link
+84,Content,Newsletter Issue Tracker,Issues with topics and performance.,Issue; Topic; Send date; Subscribers; Open rate %; Status,text; text; date; number; number; chips
+85,Content,Content Ideas Bank,A pile of ideas with format and priority.,Idea; Format; Priority; Used; Source,text; chips; rating; checkbox; link
+86,Content,Code Snippets Library,Reusable code snippets with language and highlight.,Title; Language; Snippet; Tags; Favorite,text; chips; code; text; checkbox
+87,Content,Brand Asset Library,"Logos, images and files for your brand.",Asset; Type; Preview; File; Updated; Owner,text; chips; image; files; date; avatar
+88,Content,Press & Media Mentions,Where you were mentioned and the reach.,Outlet; Headline; Link; Date; Reach; Sentiment,text; text; link; date; number; chips
+89,Education,Course Curriculum,"Lessons, objectives and resources per module.",Lesson; Module; Duration (min); Done; Resource; Notes,text; chips; number; checkbox; link; text
+90,Education,Student Gradebook,"Students, scores and grades.",Student; Email; Test 1; Test 2; Final; Grade,text; text; number; number; number; chips
+91,Education,Assignment Tracker,"Assignments, due dates and status.",Assignment; Subject; Due; Status; Grade; Done,text; chips; date; chips; number; checkbox
+92,Education,Reading List,Books and papers with status and rating.,Title; Author; Status; Rating; Finished; Link,text; text; chips; rating; date; link
+93,Education,Language Vocabulary,"Words, meanings and mastery.",Word; Meaning; Example; Mastery; Language; Learned,text; text; text; slider; chips; date
+94,Education,Study Planner,Study sessions by topic and time.,Topic; Subject; Date; Hours; Done; Confidence,text; chips; date; number; checkbox; rating
+95,Personal,Habit Tracker,Daily habits and streaks.,Habit; Mon; Tue; Wed; Thu; Fri; Streak,text; checkbox; checkbox; checkbox; checkbox; checkbox; number
+96,Personal,Workout Log,"Exercises, sets, reps and weight.",Exercise; Muscle; Sets; Reps; Weight; Date,text; chips; number; number; number; date
+97,Personal,Meal Planner,"Weekly meals, ingredients and prep.",Meal; Day; Type; Calories; Recipe; Prepped,text; chips; chips; number; link; checkbox
+98,Personal,Travel Itinerary,"Trip plan by day, place and booking.",Plan; Place; Date; Type; Cost; Booked; Link,text; text; date; chips; number; checkbox; link
+99,Personal,Watchlist,Movies and shows to watch with rating.,Title; Type; Platform; Watched; Rating; Poster,text; chips; chips; checkbox; rating; image
+100,Personal,Wishlist,"Things you want, price and link.",Item; Price; Priority; Link; Bought; Photo,text; number; chips; link; checkbox; image
